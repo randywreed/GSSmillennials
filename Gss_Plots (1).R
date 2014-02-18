@@ -59,7 +59,7 @@ compare_nones_chart<-barplot(nones_compare, beside=TRUE, col=c("blue","red"),  a
 #text(compare_nones_chart, nones_compare, labels=nones_compare, pos=3, cex=0.75)
 abline(h=mean(nones_compare))
 #create a table ggplot of millennials v. all
-library(reshape)
+#library(reshape)
 millennials_summary_by_region<-subset(melt(millennials_table_by_revised_region), Var.1=="None" & Var.2 !="Not Assigned")
 millennials_summary_by_region$MILLENNIALS <- factor(TRUE)
 nonmillennials_summary_by_region<-subset(melt(percentage_table_by_revised_region), Var.1=="None" & Var.2 !="Not Assigned")
@@ -67,7 +67,7 @@ nonmillennials_summary_by_region$MILLENNIALS <- factor(FALSE)
 all_summary_by_region<-merge(millennials_summary_by_region, nonmillennials_summary_by_region, all=TRUE)
 levels(all_summary_by_region$MILLENNIALS)<-c("Millennials","Non-Millennials")
 #comparison table using ggplot
-library(ggplot2)
+#library(ggplot2)
 ggplot(all_summary_by_region, aes(x=Var.2, y=value, fill=MILLENNIALS)) + geom_bar(stat="identity", position="dodge")+ylab("Perecentage")+xlab("Region")+ggtitle("Millennial v. Non-Millennial Nones by Region")
 
 # percentage of nones who are born again
@@ -106,7 +106,10 @@ non_millennials<-subset(Nreligid_region, Nreligid_region$MILLENNIALS=="Non-Mille
 round((prop.table(table(non_millennials$REBORN, non_millennials$RELIG),2)*100),3)
 table3<-tabular(Heading("Non-Millennials Identification as 'Born Again'")*REBORN*Percent("col") ~ (Religion=RELIG),data=non_millennials) 
 table3[1:2,c(1:2,4)]
-ggplot(non_millennials, aes(x=REBORN, fill=REBORN))+geom_bar(stat="bin", position="dodge")+facet_wrap(~RELIG, ncol=3)
+ggplot(non_millennials, aes(x=REBORN, fill=REBORN))+
+  geom_bar(stat="bin", position="dodge")+
+  facet_wrap(~RELIG, ncol=3)+
+  ggtitle("Non-millennials Identification as 'Born Again'")
 
 
 #proportion of millenial protestant/none/catholics using plyr
@@ -129,9 +132,23 @@ millennials.results <- subset(results, MILLENNIALS == "Millennials")
 #millennials.results
 #Graph proportionsn of catholic/protestant/none results for the south
 millennials.results.prop <- melt(millennials.results, id.vars="NEWREGIONID", measure.vars=c("protestant.prop","none.prop","catholic.prop"))
-ggplot(millennials.results.prop, aes(x=variable, y=value, fill=NEWREGIONID))+geom_bar(stat="identity", position="dodge")+xlab("millennials by affilliation")+ylab("Percentage")+ggtitle("Millennials Affilliation by Region")
+ggplot(millennials.results.prop, aes(x=variable, y=value, fill=NEWREGIONID))+
+  geom_bar(stat="identity", position="dodge")+
+  xlab("millennials by affilliation")+ylab("Percentage")+
+  ggtitle("Millennials Affilliation by Region")+
+  scale_fill_discrete(name="Region",
+   breaks=c("Midwest", "North","South","West"),
+    labels=c("Midwest", "North", "South", "West"))
+  
+  
 #ggplot(millennials.results.prop, aes(x=variable, y=value, fill=NEWREGIONID))+geom_bar(stat="identity", position="dodge")+xlab("millennials by affilliation")+ylab("Percentage")
-ggplot(millennials.results.prop, aes(x=NEWREGIONID, y=value, fill=variable))+geom_bar(stat="identity", position="dodge")+xlab("millennials by affilliation")+ylab("Percentage")+ggtitle("Millennials Affiliation by Region")
+ggplot(millennials.results.prop, aes(x=NEWREGIONID, y=value, fill=variable))+
+  geom_bar(stat="identity", position="dodge")+
+  xlab("millennials by affilliation")+ylab("Percentage")+
+  ggtitle("Millennials Affiliation by Region")+
+  scale_fill_discrete(name="Affiliation",
+                      breaks=c("protestant.prop","none.prop","catholic.prop"),
+                      labels=c("Protestant","None","Catholic"))
 #ggplot(millennials.results.prop, aes(x=NEWREGIONID, y=value, fill=variable))+geom_bar(stat="identity", position="dodge")+xlab("millennials by affilliation")+ylab("Percentage")+title("Millennials Affilliation by Region")
 
 #Conversion rates from/to Catholic/Protestant/None
