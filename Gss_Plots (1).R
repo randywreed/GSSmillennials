@@ -149,6 +149,7 @@ ggplot(millennials.results.prop, aes(x=NEWREGIONID, y=value, fill=variable))+
   scale_fill_discrete(name="Affiliation",
                       breaks=c("protestant.prop","none.prop","catholic.prop"),
                       labels=c("Protestant","None","Catholic"))
+
 #ggplot(millennials.results.prop, aes(x=NEWREGIONID, y=value, fill=variable))+geom_bar(stat="identity", position="dodge")+xlab("millennials by affilliation")+ylab("Percentage")+title("Millennials Affilliation by Region")
 
 #Conversion rates from/to Catholic/Protestant/None
@@ -185,7 +186,8 @@ convmil
  convmil+ scale_fill_discrete(name="Current Affilliation",
                       breaks=c("Protestant", "Catholic", "None"),
                       labels=c("Protestant", "Catholicism", "None"))+
-  ggtitle("Conversion of Southern Millennials")
+  ggtitle("Change/Conversion of Southern Millennials")
+
 ggplot(relchange.melt.n, aes(x=RELIG16, y=value, fill=variable))+geom_bar(stat="identity", postition="dodge")+
   scale_fill_discrete(name="Conversion N",
                       breaks=c("protestant.n","catholic.n","none.n"),
@@ -195,25 +197,34 @@ ggplot(relchange.melt.n, aes(x=RELIG16, y=value, fill=variable))+geom_bar(stat="
 #Conversion across all regions
 head(results16)
 relchange.all<-subset(results16,MILLENNIALS=="Millennials" & RELIG16 %in% c("Protestant","Catholic","None"))
-relchange.all.melt.n<-melt(relchange.all, id.vars=c("NEWREGIONID","RELIG16","MILLENNIALS","n"), measure.vars=c("protestant.prop","catholic.prop","none.prop"))
+relchange.all.melt.n<-melt(relchange.all, id.vars=c("NEWREGIONID","RELIG16","MILLENNIALS","n"), measure.vars=c("protestant.n","catholic.n","none.n"))
 relchange.all.melt<-melt(relchange.all, id.vars=c("NEWREGIONID","RELIG16","MILLENNIALS"), measure.vars=c("protestant.prop","catholic.prop","none.prop"))
 relchange.all.melt
 relchange.all.melt.n
 levels(relchange.all.melt$variable)<-c("Protestant","Catholic","None")
 relchange.all.melt$RELIG16.lab<- levels(relchange.all.melt$RELIG16) [as.numeric(relchange.all.melt$RELIG16)]
 relchange.all.melt$variable.lab <- levels(relchange.all.melt$variable) [as.numeric(relchange.all.melt$variable)]
-relchange.all.melt<-subset(relchange.all.melt, RELIG16.lab!=variable.lab)
-ggplot(relchange.all.melt, aes(x=RELIG16,y=value, fill=variable))+geom_bar(stat="identity", position="dodge")+
+relchange.all.melt.noidentity<-subset(relchange.all.melt, RELIG16.lab!=variable.lab)
+ggplot(relchange.all.melt.noidentity, aes(x=RELIG16,y=value, fill=variable))+geom_bar(stat="identity", position="dodge")+
+  xlab("Original Religious Affilliation")+ylab("Percentage")+
+  scale_fill_discrete(name="Current Affiliation",
+  #                    breaks=c("protestant.prop", "catholic.prop", "none.prop"),
+                      labels=c("Protestant", "Catholicism", "None"))+
+  ggtitle("Conversion of All Millennials By Region")+facet_grid(.~NEWREGIONID)
+
+ggplot(relchange.all.melt, aes(x=RELIG16,y=value, fill=variable))+geom_bar(stat="identity")+
   xlab("Original Religious Affilliation")+ylab("Percentage")+
   scale_fill_discrete(name="Conversion\nType",
-  #                    breaks=c("protestant.prop", "catholic.prop", "none.prop"),
+                      #                    breaks=c("protestant.prop", "catholic.prop", "none.prop"),
                       labels=c("to Protestant", "to Catholicism", "to None"))+
   ggtitle("Conversion of All Millennials By Region")+facet_grid(.~NEWREGIONID)
+
 ggplot(relchange.all.melt.n, aes(x=RELIG16, y=value, fill=variable))+geom_bar(stat="identity", postition="dodge")+
   scale_fill_discrete(name="Conversion N",
-                      breaks=c("protestant.prop","catholic.prop","none.prop"),
+                     # breaks=c("protestant.prop","catholic.prop","none.prop"),
                       labels=c("Protestants","Catholics","None"))+
-  xlab("Original Religious Identification")+ylab("Number")+ggtitle("Religious Change in Millennials All Regions")+facet_grid(.~NEWREGIONID)
+  xlab("Original Religious Identification")+ylab("Number")+
+  ggtitle("Religious Change in Millennials All Regions")+facet_grid(.~NEWREGIONID)
 
 #table with tables package
 
@@ -222,7 +233,7 @@ table3<-tabular((Region=NEWREGIONID*MILLENNIALS)*(Percent("row"))
       ~ Heading("Religious Affiliation")*(RELIG), data=Nreligid_region ) 
 table3[,c(1:2,4)]
 table4<-as.matrix(table3[,c(1:2,4)])
-ggplot(table4,aes())
+
 
 #correllate church attendance with none status
 Nreligid_region$NONE<-ifelse(Nreligid_region$RELIG=="None",TRUE,FALSE)
@@ -246,7 +257,7 @@ describe(Nreligid_region$ATTEND)
 describe(Nreligid_region$NONE)
 scatter<-ggplot(Nreligid_region, aes(as.numeric(ATTEND), as.numeric(RELIG)))+geom_point()+geom_smooth(method="lm")
 scatter
+plot(Nreligid_region$ATTEND, Nreligid_region$RELIG) #this currently includes all religions, needs to be subsetted
 
-#number of southern millenials who convert to none
 
 
