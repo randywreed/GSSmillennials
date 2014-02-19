@@ -231,7 +231,9 @@ ggplot(relchange.all.melt.n, aes(x=RELIG16, y=value, fill=variable))+geom_bar(st
 Protcathnone<-subset(Nreligid_region,RELIG=c("Protestant","Catholic","None"))
 table3<-tabular((Region=NEWREGIONID*MILLENNIALS)*(Percent("row"))
       ~ Heading("Religious Affiliation")*(RELIG), data=Nreligid_region ) 
-table3[,c(1:2,4)]
+outtable<-table3[,c(1:2,4)]
+outtable
+table3
 table4<-as.matrix(table3[,c(1:2,4)])
 
 
