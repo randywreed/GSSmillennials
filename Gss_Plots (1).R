@@ -66,12 +66,22 @@ levels(Nreligid_region$RELIG)<-c("iap","Protestant","Catholic","Jewish","None","
 levels(Nreligid_region$RELIG16)<-c("iap","Protestant","Catholic","Jewish","None","Other","Buddhism","Hinduism","Other Eastern","Muslim/Islam","Orthodox-Christian","Christian","Native American","Inter-/Nondenomenational","Don't Know","No Answer")
 Nreligid_region$RELIG<-factor(Nreligid_region$RELIG,levels(Nreligid_region$RELIG)[c(2:14,1,15:16)])
 Nreligid_region$RELIG16<-factor(Nreligid_region$RELIG16,levels(Nreligid_region$RELIG16)[c(2:14,1,15:16)])
+# add variable to scale ATTEND 
+attendlookup<-data.frame(attendid=c(1:10), attendnum=c(0,.5,1,6,12,30,46,52,100,-1))
+Nreligid_region$NEWATTENDID<-as.numeric(Nreligid_region$ATTEND)
+Nreligid_region$NEWATTEND<- attendlookup$attendnum[match(Nreligid_region$NEWATTENDID,attendlookup$attendid)]
+Nreligid_region$NEWATTEND<-factor(Nreligid_region$NEWATTEND,labels=c("Never","LT Yearly","Yearly","Several Times a Year","Monthly","2-3x a Month","Nearly Weekly","Weekly","More Than Weekly"))
 
 head(Nreligid_region, 20)
 head(Nreligid_region[8:10],20)
 
-#Create Tables for Graph
+#Create Subsets
+#Millennials only Subset
 gss_millennials<-subset(Nreligid_region, Nreligid_region$MILLENNIALS=="Millennials")
+#Southern Millennials only
+gss_millenials_so<-subset(gss_millennials, gss_millennials$NEWREGIONID=="South")
+
+#Create Tables for Graph
 millennials_table_by_revised_region <- round((prop.table(table(gss_millennials$RELIG, gss_millennials$NEWREGIONID),2)*100),3)
 millennials_table_by_revised_region
 colSums(millennials_table_by_revised_region)
@@ -288,10 +298,14 @@ cor.test(as.numeric(Nreligid_region$ATTEND),as.numeric(Nreligid_region$NONE))
 #95 % confidence does not cross zero
 #Negative correlation, with high confidence
 #
-# add variable to scale ATTEND 
 
-describe(Nreligid_region$ATTEND)
+
+describe(Nreligid_region$NEWATTEND)
 describe(Nreligid_region$NONE)
+describe(gss_millenials_so$NEWATTEND)
+hist(as.numeric(Nreligid_region$NEWATTEND))
+hist(as.numeric(gss_millennials$NEWATTEND))
+hist(as.numeric(gss_millenials_so$NEWATTEND))
 
 scatter<-ggplot(Nreligid_region, aes(as.numeric(ATTEND), as.numeric(RELIG)))+geom_point()+geom_smooth(method="lm")
 scatter
