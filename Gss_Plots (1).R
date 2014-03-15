@@ -288,8 +288,11 @@ cor.test(as.numeric(Nreligid_region$ATTEND),as.numeric(Nreligid_region$NONE))
 #95 % confidence does not cross zero
 #Negative correlation, with high confidence
 #
+# add variable to scale ATTEND 
+
 describe(Nreligid_region$ATTEND)
 describe(Nreligid_region$NONE)
+
 scatter<-ggplot(Nreligid_region, aes(as.numeric(ATTEND), as.numeric(RELIG)))+geom_point()+geom_smooth(method="lm")
 scatter
 plot(Nreligid_region$ATTEND, Nreligid_region$RELIG) #this currently includes all religions, needs to be subsetted
