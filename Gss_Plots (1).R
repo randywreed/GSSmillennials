@@ -49,6 +49,7 @@ names(gss2012)
 #Create religid_region
 Nreligid_region<-gss2012[,c("RELIG","REGION")]
 lookupRegion<-data.frame(regionid=c('2','3','4','5','6','7','8','9','10'), region=c('North',"North","Midwest","Midwest","South","South","South","West","West"))
+Nreligid_region$REGIONID<-as.numeric(Nreligid_region$REGION)
 Nreligid_region$NEWREGIONID <- lookupRegion$region[match(Nreligid_region$REGIONID, lookupRegion$regionid)]
 #Add data of everyone born again
 Nreligid_region$AGE<-gss2012$AGE
