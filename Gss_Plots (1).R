@@ -1,5 +1,5 @@
 #if r has had a verison change run this
-#yupdate.packages(ask=FALSE, dependencies=c('Suggests'))
+#update.packages(ask=FALSE, dependencies=c('Suggests'))
 
 #packages (Install once)
 install.packages("lattice")
