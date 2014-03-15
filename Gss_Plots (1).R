@@ -1,11 +1,34 @@
+#if r has had a verison change run this
+#yupdate.packages(ask=FALSE, dependencies=c('Suggests'))
+
 #packages (Install once)
+install.packages("lattice")
+install.packages("cluster")
+install.packages("Hmisc")
 install.packages("tables") #tabular package
 install.packages("ggplot2")
-install.packages("Hmisc")
 install.packages("gridExtra")
 install.packages("dplyr")
 install.packages("foreign")
 install.packages("reshape")
+
+#install dplyr and rcpp from github
+install.packages("devtools")
+install.packages("hflights") #required for dplyr
+install.packages("DBI")
+install.packages("RSQLite")
+install.packages("RSQLite.extfuns")
+install.packages("nlme")
+install.packages("Matrix")
+install.packages("mgcv")
+install.packages("Lahman")
+
+#these may not be necessary and errored anyway
+#devtools::install_github( "romainfrancois/Rcpp11" )
+#require( Rcpp11 )
+#evalCpp( "2LL" )
+
+devtools::install_github("hadley/dplyr")
 
 library("Hmisc")
 library("ggplot2")
@@ -17,15 +40,14 @@ library("reshape")
 
 #copy gss 2008-2012 data
 
-gss2012<-gss2008_12.relcombine
+#gss2012<-gss2008_12.relcombine
+gss2012<-gss1990
 names(gss2012)
 names(gss2012)<-toupper(names(gss2012))
 names(gss2012)
       
 #Create religid_region
 Nreligid_region<-gss2012[,c("RELIG","REGION")]
-Nreligid_region$REGIONID<-as.numeric(gss2012$REGION)
-Nreligid_region$RELIGID<-as.numeric(gss2012$RELIG)
 lookupRegion<-data.frame(regionid=c('2','3','4','5','6','7','8','9','10'), region=c('North',"North","Midwest","Midwest","South","South","South","West","West"))
 Nreligid_region$NEWREGIONID <- lookupRegion$region[match(Nreligid_region$REGIONID, lookupRegion$regionid)]
 #Add data of everyone born again
@@ -34,11 +56,16 @@ Nreligid_region$REBORN<-gss2012$REBORN
 #millennials<-c("18","19","20","21","22","23","24","25","26","27","28","29")
 Nreligid_region$COHORT<-gss2012$COHORT
 #Nreligid_region<-within(Nreligid_region, MILLENNIALS <- {ifelse(Nreligid_region$AGE %in% millennials, TRUE, FALSE)})
-Nreligid_region<-within(Nreligid_region, MILLENNIALS <- {ifelse(as.numeric(as.character(Nreligid_region$COHORT)) >= 1985, TRUE, FALSE)})
+Nreligid_region<-within(Nreligid_region, MILLENNIALS <- {ifelse(as.numeric(as.character(Nreligid_region$COHORT)) >= 1980, TRUE, FALSE)})
 Nreligid_region$MILLENNIALS<-as.factor(Nreligid_region$MILLENNIALS)
 levels(Nreligid_region$MILLENNIALS)<-c("Non-Millennials","Millennials")
 Nreligid_region$RELIG16<-gss2012$RELIG16
 Nreligid_region$ATTEND<-gss2012$ATTEND
+levels(Nreligid_region$RELIG)<-c("iap","Protestant","Catholic","Jewish","None","Other","Buddhism","Hinduism","Other Eastern","Muslim/Islam","Orthodox-Christian","Christian","Native American","Inter-/Nondenomenational","Don't Know","NA")
+levels(Nreligid_region$RELIG16)<-c("iap","Protestant","Catholic","Jewish","None","Other","Buddhism","Hinduism","Other Eastern","Muslim/Islam","Orthodox-Christian","Christian","Native American","Inter-/Nondenomenational","Don't Know","NA")
+Nreligid_region$RELIG<-factor(Nreligid_region$RELIG,levels(Nreligid_region$RELIG)[c(2:14,1,15:16)])
+Nreligid_region$RELIG16<-factor(Nreligid_region$RELIG16,levels(Nreligid_region$RELIG16)[c(2:14,1,15:16)])
+
 head(Nreligid_region, 20)
 head(Nreligid_region[8:10],20)
 
@@ -52,7 +79,7 @@ percentage_table_by_revised_region <- round(prop.table(table(Nreligid_region$REL
 percentage_table_by_revised_region
 colSums(percentage_table_by_revised_region)
 #comparison table
-par(mar=c(5.1,4.1,4.1,2.1))
+#par(mar=c(5.1,4.1,4.1,2.1))
 nones_compare<-cbind(millennials_table_by_revised_region[4,1], percentage_table_by_revised_region[4,1],millennials_table_by_revised_region[4,2], percentage_table_by_revised_region[4,2],millennials_table_by_revised_region[4,3], percentage_table_by_revised_region[4,3],millennials_table_by_revised_region[4,4], percentage_table_by_revised_region[4,4])
 colnames(nones_compare)<-c("Millennials Midwest","All Midwest", "Millennials North","All North","Millennials South","All South","Millennials West","All West" )
 compare_nones_chart<-barplot(nones_compare, beside=TRUE, col=c("blue","red"),  axis.lty=1, las=2, main="Millennials Nones v All Nones By Region")
