@@ -44,7 +44,8 @@ library("scales")
 library("vcd")
 
 #copy gss 2008-2012 data
-
+#gss1990 must be added first
+#Run download_gss.R first, it should create gss1990
 #gss2012<-gss2008_12.relcombine
 gss2012<-subset(gss1990, year>2007)
 names(gss2012)
