@@ -1,7 +1,12 @@
+#if r has had a verison change run this
+#update.packages(ask=FALSE, dependencies=c('Suggests'))
+
 #packages (Install once)
+install.packages("lattice")
+install.packages("cluster")
+install.packages("Hmisc")
 install.packages("tables") #tabular package
 install.packages("ggplot2")
-install.packages("Hmisc")
 install.packages("gridExtra")
 install.packages("Rcpp")
 install.packages("dplyr")
@@ -9,6 +14,24 @@ install.packages("foreign")
 install.packages("reshape")
 install.packages("scales")
 install.packages("vcd")
+
+#install dplyr and rcpp from github
+install.packages("devtools")
+install.packages("hflights") #required for dplyr
+install.packages("DBI")
+install.packages("RSQLite")
+install.packages("RSQLite.extfuns")
+install.packages("nlme")
+install.packages("Matrix")
+install.packages("mgcv")
+install.packages("Lahman")
+
+#these may not be necessary and errored anyway
+#devtools::install_github( "romainfrancois/Rcpp11" )
+#require( Rcpp11 )
+#evalCpp( "2LL" )
+
+devtools::install_github("hadley/dplyr")
 
 library("Hmisc")
 library("ggplot2")
@@ -22,17 +45,18 @@ library("vcd")
 
 #copy gss 2008-2012 data
 
-gss2012<-gss2008_12.relcombine
+#gss2012<-gss2008_12.relcombine
+gss2012<-subset(gss1990, year>2007)
 names(gss2012)
 names(gss2012)<-toupper(names(gss2012))
 names(gss2012)
+rm(gss1990)
       
 #Create religid_region
 Nreligid_region<-gss2012[,c("RELIG","REGION")]
-Nreligid_region$REGIONID<-as.numeric(gss2012$REGION)
-Nreligid_region$RELIGID<-as.numeric(gss2012$RELIG)
 Nreligid_region$RELIG<- factor(gss2012$RELIG, labels=c("Protestant","Catholic","Jewish","None","Other (specify)","Buddhism","Hinduism","Other Eastern Religion","Muslim/Islam","Orthodox Christian","Christian","Native American","Inter-/non-denominational"))
 lookupRegion<-data.frame(regionid=c('2','3','4','5','6','7','8','9','10'), region=c('North',"North","Midwest","Midwest","South","South","South","West","West"))
+Nreligid_region$REGIONID<-as.numeric(Nreligid_region$REGION)
 Nreligid_region$NEWREGIONID <- lookupRegion$region[match(Nreligid_region$REGIONID, lookupRegion$regionid)]
 #Add data of everyone born again
 Nreligid_region$AGE<-gss2012$AGE
@@ -40,25 +64,40 @@ Nreligid_region$REBORN<-gss2012$REBORN
 #millennials<-c("18","19","20","21","22","23","24","25","26","27","28","29")
 Nreligid_region$COHORT<-gss2012$COHORT
 #Nreligid_region<-within(Nreligid_region, MILLENNIALS <- {ifelse(Nreligid_region$AGE %in% millennials, TRUE, FALSE)})
-Nreligid_region<-within(Nreligid_region, MILLENNIALS <- {ifelse(as.numeric(as.character(Nreligid_region$COHORT)) >= 1985, TRUE, FALSE)})
+Nreligid_region<-within(Nreligid_region, MILLENNIALS <- {ifelse(as.numeric(as.character(Nreligid_region$COHORT)) >= 1980, TRUE, FALSE)})
 Nreligid_region$MILLENNIALS<-as.factor(Nreligid_region$MILLENNIALS)
 levels(Nreligid_region$MILLENNIALS)<-c("Non-Millennials","Millennials")
 Nreligid_region$RELIG16<-gss2012$RELIG16
 Nreligid_region$ATTEND<-gss2012$ATTEND
+levels(Nreligid_region$RELIG)<-c("iap","Protestant","Catholic","Jewish","None","Other","Buddhism","Hinduism","Other Eastern","Muslim/Islam","Orthodox-Christian","Christian","Native American","Inter-/Nondenomenational","Don't Know","No Answer")
+levels(Nreligid_region$RELIG16)<-c("iap","Protestant","Catholic","Jewish","None","Other","Buddhism","Hinduism","Other Eastern","Muslim/Islam","Orthodox-Christian","Christian","Native American","Inter-/Nondenomenational","Don't Know","No Answer")
+Nreligid_region$RELIG<-factor(Nreligid_region$RELIG,levels(Nreligid_region$RELIG)[c(2:14,1,15:16)])
+Nreligid_region$RELIG16<-factor(Nreligid_region$RELIG16,levels(Nreligid_region$RELIG16)[c(2:14,1,15:16)])
+# add variable to scale ATTEND 
+attendlookup<-data.frame(attendid=c(1:10), attendnum=c(0,.5,1,6,12,30,46,52,100,-1))
+Nreligid_region$NEWATTENDID<-as.numeric(Nreligid_region$ATTEND)
+Nreligid_region$NEWATTEND<- attendlookup$attendnum[match(Nreligid_region$NEWATTENDID,attendlookup$attendid)]
+Nreligid_region$NEWATTEND<-factor(Nreligid_region$NEWATTEND,labels=c("Never","LT Yearly","Yearly","Several Times a Year","Monthly","2-3x a Month","Nearly Weekly","Weekly","More Than Weekly"))
+
 head(Nreligid_region, 20)
 head(Nreligid_region[8:10],20)
 
-#Create Tables for Graph
+#Create Subsets
+#Millennials only Subset
 gss_millennials<-subset(Nreligid_region, Nreligid_region$MILLENNIALS=="Millennials")
+#Southern Millennials only
+gss_millenials_so<-subset(gss_millennials, gss_millennials$NEWREGIONID=="South")
+
+#Create Tables for Graph
 millennials_table_by_revised_region <- round((prop.table(table(gss_millennials$RELIG, gss_millennials$NEWREGIONID),2)*100),3)
 millennials_table_by_revised_region
 colSums(millennials_table_by_revised_region)
 # all nones
-percentage_table_by_revised_region <- round(prop.table(table(Nreligid_region$RELIG, Nreligid_region$NEWREGIONID),2 )*100, 3)
+percentage_table_by_revised_region <- round((prop.table(table(Nreligid_region$RELIG, Nreligid_region$NEWREGIONID),2 )*100), 3)
 percentage_table_by_revised_region
 colSums(percentage_table_by_revised_region)
 #comparison table
-par(mar=c(5.1,4.1,4.1,2.1))
+#par(mar=c(5.1,4.1,4.1,2.1))
 nones_compare<-cbind(millennials_table_by_revised_region[4,1], percentage_table_by_revised_region[4,1],millennials_table_by_revised_region[4,2], percentage_table_by_revised_region[4,2],millennials_table_by_revised_region[4,3], percentage_table_by_revised_region[4,3],millennials_table_by_revised_region[4,4], percentage_table_by_revised_region[4,4])
 colnames(nones_compare)<-c("Millennials Midwest","All Midwest", "Millennials North","All North","Millennials South","All South","Millennials West","All West" )
 compare_nones_chart<-barplot(nones_compare, beside=TRUE, col=c("blue","red"),  axis.lty=1, las=2, main="Millennials Nones v All Nones By Region")
@@ -78,8 +117,9 @@ ggplot(all_summary_by_region, aes(x=Var.2, y=value, fill=MILLENNIALS)) + geom_ba
 
 # percentage of nones who are born again
 
-round((prop.table(table(Nreligid_region$RELIG, Nreligid_region$NEWREGIONID, Nreligid_region$REBORN, exclude=c("Don't know", "No answer")),2)*100),3)
-Born_again_Subset<-subset(Nreligid_region, Nreligid_region$REBORN==1)
+
+round((prop.table(table(Nreligid_region$RELIG, Nreligid_region$NEWREGIONID, Nreligid_region$REBORN, exclude=c("iap","dk", "na")),2)*100),3)
+Born_again_Subset<-subset(Nreligid_region, toupper(Nreligid_region$REBORN)=="YES")
 Born_again_table<-round((prop.table(table(Born_again_Subset$RELIG, Born_again_Subset$NEWREGIONID),2)*100),3)
 Born_again_subset_wide<-melt(Born_again_table)
 Born_again_subset_wide_select<-subset(Born_again_subset_wide, Born_again_subset_wide$Var.1 %in% c("Protestant","None","Catholic"))
@@ -90,9 +130,9 @@ gss_millennials$REBORN<-factor(gss_millennials$REBORN)
 levels(gss_millennials$REBORN)<-c("Yes","No")
 round((prop.table(table(gss_millennials$RELIG, gss_millennials$NEWREGIONID),2)*100),3)
 round((prop.table(table(gss_millennials$REBORN, gss_millennials$NEWREGIONID),2)*100),3)
-#gss_millennials<-subset(gss_millennials, REBORN %in% c("Yes","No"))
+gss_millennials<-subset(gss_millennials, toupper(REBORN) %in% c("YES","NO"))
 ggplot(gss_millennials, aes(x=gss_millennials$REBORN, fill=gss_millennials$NEWREGIONID))+geom_bar(stat="bin", position="dodge")+xlab("Born Again")+ylab("Number of Adherents")+ggtitle("Count of Millennials Are Born Again")+scale_fill_discrete(name="Region")
-born_again_and_millennials <- subset(melt(round((prop.table(table(gss_millennials$REBORN, gss_millennials$NEWREGIONID),2)*100),3)), Var.1==c("Yes","No"))
+born_again_and_millennials <- subset(melt(round((prop.table(table(gss_millennials$REBORN, gss_millennials$NEWREGIONID),2)*100),3)), toupper(Var.1) %in% c("YES","NO"))
 ggplot(born_again_and_millennials, aes(x=born_again_and_millennials$Var.1, y=born_again_and_millennials$value, fill=born_again_and_millennials$Var.2))+geom_bar(stat="identity", position="dodge")+ylab("Percentage")+xlab("Born Again?")+ggtitle("Millennial Identification as 'Born Again'")+scale_fill_discrete(name="Region")
 table(gss_millennials$REBORN, gss_millennials$RELIG)
 round((prop.table(table(gss_millennials$REBORN, gss_millennials$RELIG),2)*100),3)
@@ -185,10 +225,14 @@ millennials.results.prop <- melt(millennials.results, id.vars="NEWREGIONID", mea
 ggplot(millennials.results.prop, aes(x=variable, y=value, fill=NEWREGIONID))+
   geom_bar(stat="identity", position="dodge")+
   xlab("millennials by affilliation")+ylab("Percentage")+
-  ggtitle("Millennials Affilliation by Region")+
+  ggtitle("Millennials Regional Affiliation by Religious Affiliation")+
   scale_fill_discrete(name="Region",
    breaks=c("Midwest", "North","South","West"),
-    labels=c("Midwest", "North", "South", "West"))
+    labels=c("Midwest", "North", "South", "West"))+
+   scale_x_discrete(breaks=c("protestant.prop","none.prop","catholic.prop"),
+    labels=c("Protestant","Catholic","None")
+    )
+
   
   
 #ggplot(millennials.results.prop, aes(x=variable, y=value, fill=NEWREGIONID))+geom_bar(stat="identity", position="dodge")+xlab("millennials by affilliation")+ylab("Percentage")
@@ -231,7 +275,7 @@ relchange.comp.melt<-relchange.melt
 #relchange.melt<-subset(relchange.melt, RELIG16.lab!=variable.lab)
 
 convmil<-ggplot(relchange.melt, aes(x=RELIG16,y=value, fill=variable))+geom_bar(stat="identity")+
-  xlab("Original Religious Affilliation")+ylab("Percentage")
+  xlab("Original Religious Affilliation (South)")+ylab("Percentage")
 convmil
  convmil+ scale_fill_discrete(name="Current Affilliation",
                       breaks=c("Protestant", "Catholic", "None"),
@@ -242,7 +286,7 @@ ggplot(relchange.melt.n, aes(x=RELIG16, y=value, fill=variable))+geom_bar(stat="
   scale_fill_discrete(name="Conversion N",
                       breaks=c("protestant.n","catholic.n","none.n"),
                       labels=c("Protestants","Catholics","None"))+
-  xlab("Original Religious Identification")+ylab("Number")+ggtitle("Religious Change in Southern Millennials")
+  xlab("Original Religious Identification")+ylab("Number")+ggtitle("Religious Change in Southern Millennials (Count)")
 
 #Conversion across all regions
 head(results16)
@@ -348,8 +392,15 @@ cor.test(as.numeric(Nreligid_region$ATTEND),as.numeric(Nreligid_region$NONE))
 #95 % confidence does not cross zero
 #Negative correlation, with high confidence
 #
-describe(Nreligid_region$ATTEND)
+
+
+describe(Nreligid_region$NEWATTEND)
 describe(Nreligid_region$NONE)
+describe(gss_millenials_so$NEWATTEND)
+hist(as.numeric(Nreligid_region$NEWATTEND))
+hist(as.numeric(gss_millennials$NEWATTEND))
+hist(as.numeric(gss_millenials_so$NEWATTEND))
+
 scatter<-ggplot(Nreligid_region, aes(as.numeric(ATTEND), as.numeric(RELIG)))+geom_point()+geom_smooth(method="lm")
 scatter
 plot(Nreligid_region$ATTEND, Nreligid_region$RELIG) #this currently includes all religions, needs to be subsetted
