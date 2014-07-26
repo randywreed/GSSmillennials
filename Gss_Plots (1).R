@@ -53,6 +53,7 @@ names(gss2012)
 rm(gss1990)
       
 #Create religid_region
+Nreligid_region$YEAR<-gss2012$YEAR
 Nreligid_region<-gss2012[,c("RELIG","REGION")]
 Nreligid_region$RELIG<- factor(gss2012$RELIG, labels=c("Protestant","Catholic","Jewish","None","Other (specify)","Buddhism","Hinduism","Other Eastern Religion","Muslim/Islam","Orthodox Christian","Christian","Native American","Inter-/non-denominational"))
 lookupRegion<-data.frame(regionid=c('2','3','4','5','6','7','8','9','10'), region=c('North',"North","Midwest","Midwest","South","South","South","West","West"))
@@ -170,23 +171,45 @@ table(Nreligid_region$NEWREGIONID,Nreligid_region$REBORNFAC,Nreligid_region$MILL
 tabular(NEWREGIONID*MILLENNIALS~((REBORNFAC=="Yes")+(REBORNFAC=="No")), data=Nreligid_region)
 BornAgainTable<-round((prop.table(table(Nreligid_region$NEWREGIONID,Nreligid_region$REBORNFAC,Nreligid_region$MILLENNIALS),c(3,1))*100),3)
 ftable(BornAgainTable)
-plot(BornAgainTable)
+#plot(BornAgainTable)
 BornAgainDF<-as.data.frame(BornAgainTable)
 BornAgainDF<-rename(BornAgainDF, c("Var1"="NEWREGIONID","Var2"="REBORN","Var3"="MILLENNIALS"))
 round((prop.table(table(Born_again_Subset$NEWREGIONID, Born_again_Subset$MILLENNIALS),1)*100),3)
-Nreligid_region_plot<-na.omit(Nreligid_region)
+#Nreligid_region_plot<-na.omit(Nreligid_region)
 ggplot(Nreligid_region_plot, aes(x=MILLENNIALS, fill=REBORNFAC))+
   geom_bar(aes(y=(..count..)/sum(..count..)),position="dodge")+
   facet_wrap(~NEWREGIONID, ncol=2)+
   ylab("Percentage")+
-  scale_fill_discrete(name="Born Again?")
-  #scale_y_continuous(labels = percent_format())
+  scale_fill_discrete(name="Born Again?")+
+  scale_y_continuous(labels = percent_format())
 
 ggplot(BornAgainDF, aes(x=MILLENNIALS, y=Freq, fill=REBORN ))+
   geom_bar( stat="identity", position="dodge")+
   facet_wrap(~NEWREGIONID, ncol=2)+
   ylab("Percentage")+xlab("Non-Millennials v. Millennials")+
   scale_fill_discrete(name="Born Again?")
+
+#Time Series
+
+time_melt<-melt(prop.table(table(as.factor(Nreligid_region$YEAR),Nreligid_region$REBORNFAC)), id.vars=YEAR)
+ggplot(time_melt, aes(x=Var.1, y=value, color=Var.2))+geom_line()+xlab("Year")+ylab("Percentage")+
+  scale_fill_discrete(name="Born Again?")+
+  scale_y_continuous(labels=percent_format())
+
+millennials_subset<-subset(Nreligid_region, Nreligid_region$MILLENNIALS=="Millennials")
+Reborn_prop<-table(as.factor(millennials_subset$YEAR), 
+                 millennials_subset$REBORNFAC, 
+                 millennials_subset$NEWREGIONID)
+prop.table(Reborn_prop,1)*100
+Mills_reborn_prop<-prop.table(ftable(
+  xtabs(~millennials_subset$NEWREGIONID+millennials_subset$YEAR+
+          millennials_subset$REBORNFAC)),1)*100
+Mills_reborn_prop
+time_melt<-melt(Mills_reborn_prop, id.vars=YEAR)
+ggplot(time_melt, aes(x=value.millennials_subset.YEAR, y=value.Freq, group=value.millennials_subset.REBORNFAC, color=value.millennials_subset.REBORNFAC))+
+  geom_line()
+  facet_wrap(~value.millennials_subset.NEWREGIONID, ncol=2)+
+  ylab("Percentage")+xlab("Year")+scale_fill_discrete(name="Born Again?")
 
 #focus on the south
 BornAgainSouthDF<-subset(BornAgainDF, BornAgainDF$NEWREGIONID=="South")
