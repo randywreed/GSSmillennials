@@ -114,6 +114,8 @@ gss2008_12.religionA<-gss2008_12[c("year","region","age","reborn", "attend","att
 gss2008_12.religionB<-gss2008_12[relnames]
 gss2008_12.religionC<-gss2008_12[4588:4675]
 gss2008_12.relcombine<-data.frame(gss2008_12.religionA,gss2008_12.religionB, gss2008_12.religionC)
+#convert all names to uppercase
+names(gss2008_12.relcombine)<-toupper(names(gss2008_12.relcombine))
 head(gss2008_12.relcombine)
 nrow(gss2008_12.relcombine)
 save( gss2008_12.relcombine , file = "gss2008_12.rda" )
