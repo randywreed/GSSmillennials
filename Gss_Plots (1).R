@@ -44,19 +44,16 @@ library("scales")
 library("vcd")
 
 #copy gss 2008-2012 data
-#gss1990 must be added first
-#Run download_gss.R first, it should create gss1990
-#gss2012<-gss2008_12.relcombine
-gss2012<-subset(gss1990, year>2007)
-names(gss2012)
-names(gss2012)<-toupper(names(gss2012))
-names(gss2012)
-rm(gss1990)
-      
+#run dl_create_gss.R first to create data file (NOTE: heavy system requirements, please read the comments in file)
+# dl_create_gss.R creates gss2008_12.rda
+# gss2008_12.rda is loaded into gss2012
+gss2012<-load("gss2008_12.rda")
+gss2012<-gss2008_12.relcombine
+rm("gss2008_12.relcombine")
+
 #Create religid_region
-Nreligid_region$YEAR<-gss2012$YEAR
-Nreligid_region<-gss2012[,c("RELIG","REGION")]
-Nreligid_region$RELIG<- factor(gss2012$RELIG, labels=c("Protestant","Catholic","Jewish","None","Other (specify)","Buddhism","Hinduism","Other Eastern Religion","Muslim/Islam","Orthodox Christian","Christian","Native American","Inter-/non-denominational"))
+Nreligid_region<-gss2012[,c("YEAR","RELIG","REGION")]
+#Nreligid_region$RELIG<- factor(gss2012$RELIG, labels=c("Protestant","Catholic","Jewish","None","Other (specify)","Buddhism","Hinduism","Other Eastern Religion","Muslim/Islam","Orthodox Christian","Christian","Native American","Inter-/non-denominational"))
 lookupRegion<-data.frame(regionid=c('2','3','4','5','6','7','8','9','10'), region=c('North',"North","Midwest","Midwest","South","South","South","West","West"))
 Nreligid_region$REGIONID<-as.numeric(Nreligid_region$REGION)
 Nreligid_region$NEWREGIONID <- lookupRegion$region[match(Nreligid_region$REGIONID, lookupRegion$regionid)]
@@ -71,10 +68,10 @@ Nreligid_region$MILLENNIALS<-as.factor(Nreligid_region$MILLENNIALS)
 levels(Nreligid_region$MILLENNIALS)<-c("Non-Millennials","Millennials")
 Nreligid_region$RELIG16<-gss2012$RELIG16
 Nreligid_region$ATTEND<-gss2012$ATTEND
-levels(Nreligid_region$RELIG)<-c("iap","Protestant","Catholic","Jewish","None","Other","Buddhism","Hinduism","Other Eastern","Muslim/Islam","Orthodox-Christian","Christian","Native American","Inter-/Nondenomenational","Don't Know","No Answer")
-levels(Nreligid_region$RELIG16)<-c("iap","Protestant","Catholic","Jewish","None","Other","Buddhism","Hinduism","Other Eastern","Muslim/Islam","Orthodox-Christian","Christian","Native American","Inter-/Nondenomenational","Don't Know","No Answer")
-Nreligid_region$RELIG<-factor(Nreligid_region$RELIG,levels(Nreligid_region$RELIG)[c(2:14,1,15:16)])
-Nreligid_region$RELIG16<-factor(Nreligid_region$RELIG16,levels(Nreligid_region$RELIG16)[c(2:14,1,15:16)])
+#levels(Nreligid_region$RELIG)<-c("iap","Protestant","Catholic","Jewish","None","Other","Buddhism","Hinduism","Other Eastern","Muslim/Islam","Orthodox-Christian","Christian","Native American","Inter-/Nondenomenational","Don't Know","No Answer")
+#levels(Nreligid_region$RELIG16)<-c("iap","Protestant","Catholic","Jewish","None","Other","Buddhism","Hinduism","Other Eastern","Muslim/Islam","Orthodox-Christian","Christian","Native American","Inter-/Nondenomenational","Don't Know","No Answer")
+#Nreligid_region$RELIG<-factor(Nreligid_region$RELIG,levels(Nreligid_region$RELIG)[c(2:14,1,15:16)])
+#Nreligid_region$RELIG16<-factor(Nreligid_region$RELIG16,levels(Nreligid_region$RELIG16)[c(2:14,1,15:16)])
 # add variable to scale ATTEND 
 attendlookup<-data.frame(attendid=c(1:10), attendnum=c(0,.5,1,6,12,30,46,52,100,-1))
 Nreligid_region$NEWATTENDID<-as.numeric(Nreligid_region$ATTEND)
