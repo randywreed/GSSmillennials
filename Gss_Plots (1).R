@@ -400,8 +400,13 @@ mosaicplot(table6, col=rainbow(ncol(table6)))
 mosaicplot(table6, shade=T, main="Residuals for correlation Attendance/Affiliation")
 
 #correllate church attendance with none status
+<<<<<<< Updated upstream
 Nreligid_region$NONE<-ifelse(Nreligid_region$RELIG=="NONE",TRUE,FALSE)
 cor.test(as.numeric(Nreligid_region$ATTEND),as.numeric(Nreligid_region$NONE))
+=======
+Nreligid_region$NONE<-ifelse(Nreligid_region$RELIG=="None",TRUE,FALSE)
+cor.test(as.numeric(Nreligid_region$NEWATTEND),as.numeric(Nreligid_region$NONE))
+>>>>>>> Stashed changes
 #Pearson's product-moment correlation
 #
 #data:  as.numeric(Nreligid_region$ATTEND) and as.numeric(Nreligid_region$NONE)
@@ -417,6 +422,11 @@ cor.test(as.numeric(Nreligid_region$ATTEND),as.numeric(Nreligid_region$NONE))
 #95 % confidence does not cross zero
 #Negative correlation, with high confidence
 #
+#X2 test 
+chisq.test(Nreligid_region$NEWATTEND, Nreligid_region$RELIG)
+chisq.test(gss_millenials_so$NEWATTEND, gss_millenials_so$RELIG)
+attendvrelig<-table(gss_millenials_so$NEWATTEND, gss_millenials_so$RELIG)
+chisq.test(attendvrelig)
 
 
 describe(Nreligid_region$NEWATTEND)
@@ -426,9 +436,6 @@ hist(as.numeric(Nreligid_region$NEWATTEND))
 hist(as.numeric(gss_millennials$NEWATTEND))
 hist(as.numeric(gss_millenials_so$NEWATTEND))
 
-scatter<-ggplot(Nreligid_region, aes(as.numeric(ATTEND), as.numeric(RELIG)))+geom_point()+geom_smooth(method="lm")
-scatter
-plot(Nreligid_region$ATTEND, Nreligid_region$RELIG) #this currently includes all religions, needs to be subsetted
 
 
 
