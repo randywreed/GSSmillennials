@@ -117,10 +117,12 @@ ggplot(na.omit(subset(Nreligid_region, REBORN %in% c("YES","NO"))), aes(x=NEWREG
 millennials_table_by_revised_region <- round((prop.table(table(gss_millennials$RELIG, gss_millennials$NEWREGIONID),2)*100),3)
 millennials_table_by_revised_region
 colSums(millennials_table_by_revised_region)
+
 # all nones
 percentage_table_by_revised_region <- round((prop.table(table(Nreligid_region$RELIG, Nreligid_region$NEWREGIONID),2 )*100), 3)
 percentage_table_by_revised_region
 colSums(percentage_table_by_revised_region)
+
 #comparison table
 #par(mar=c(5.1,4.1,4.1,2.1))
 nones_compare<-cbind(millennials_table_by_revised_region[4,1], percentage_table_by_revised_region[4,1],millennials_table_by_revised_region[4,2], percentage_table_by_revised_region[4,2],millennials_table_by_revised_region[4,3], percentage_table_by_revised_region[4,3],millennials_table_by_revised_region[4,4], percentage_table_by_revised_region[4,4])
@@ -129,7 +131,7 @@ compare_nones_chart<-barplot(nones_compare, beside=TRUE, col=c("blue","red"),  a
 #text(compare_nones_chart, nones_compare, labels=nones_compare, pos=3, cex=0.75)
 abline(h=mean(nones_compare))
 
-#create a table ggplot of millennials v. all
+#create a table ggplot of millennials nones v. all nones
 #library(reshape)
 millennials_summary_by_region<-subset(melt(millennials_table_by_revised_region), Var.1=="NONE" & Var.2 !="Not Assigned")
 millennials_summary_by_region$MILLENNIALS <- factor(TRUE)
@@ -146,8 +148,6 @@ ggplot(all_summary_by_region, aes(x=Var.2, y=value, fill=MILLENNIALS)) +
                       labels=c("Millennial Nones","Non-Millennial Nones"))
 
 # percentage of nones who are born again
-
-
 round((prop.table(table(Nreligid_region$RELIG, Nreligid_region$NEWREGIONID, Nreligid_region$REBORN, exclude=c("iap","dk", "na")),2)*100),3)
 Born_again_Subset<-subset(Nreligid_region, toupper(Nreligid_region$REBORN)=="YES")
 Born_again_table<-round((prop.table(table(Born_again_Subset$RELIG, Born_again_Subset$NEWREGIONID),2)*100),3)
@@ -246,6 +246,12 @@ ggplot(time_melt, aes(x=Var.1, y=value, color=Var.2))+geom_line()+xlab("Year")+y
 names(gss2000_2012)<-toupper(names(gss2000_2012))
 gss2000_12<-subset(gss2000_2012,REBORN %in% c("YES","NO"))
 rm(gss2000_2012)
+gss2000_12<-within(gss2000_12, MILLENNIALS <- {ifelse(as.numeric(as.character(gss2000_12$COHORT)) >= 1980, TRUE, FALSE)})
+gss2000_12$MILLENNIALS<-as.factor(gss2000_12$MILLENNIALS)
+levels(gss2000_12$MILLENNIALS)<-c("Non-Millennials","Millennials")
+lookupRegion<-data.frame(regionid=c('2','3','4','5','6','7','8','9','10'), region=c('North',"North","Midwest","Midwest","South","South","South","West","West"))
+gss2000_12$REGIONID<-as.numeric(gss2000_12$REGION)
+gss2000_12$NEWREGIONID <- lookupRegion$region[match(gss2000_12$REGIONID, lookupRegion$regionid)]
 gss2000_12$REBORN<-factor(gss2000_12$REBORN)
 time_melt<-melt(prop.table(table(as.factor(gss2000_12$YEAR), gss2000_12$REBORN)), id.vars=YEAR)
 ggplot(time_melt, aes(x=Var.1, y=value, color=Var.2))+geom_line()+xlab("Year")+ylab("Percentage")+
@@ -269,12 +275,29 @@ ggplot(time_melt, aes(x=value.millennials_subset.YEAR, y=value.Freq, group=value
   ylab("Percentage")+xlab("Year")+scale_color_discrete(name="Born Again?")+
   ggtitle("Millennial Born Again Percentage Since 2008")
 
-#focus on the south
+#regional time series 2000-2012
+millennials_subset<-subset(gss2000_12, MILLENNIALS=="Millennials")
+Reborn_prop<-table(as.factor(millennials_subset$YEAR), 
+                   millennials_subset$REBORN, 
+                   millennials_subset$NEWREGIONID)
+prop.table(Reborn_prop,1)*100
+Mills_reborn_prop<-prop.table(ftable(
+  xtabs(~millennials_subset$NEWREGIONID+millennials_subset$YEAR+
+          millennials_subset$REBORN)),1)*100
+Mills_reborn_prop
+time_melt<-melt(Mills_reborn_prop, id.vars=YEAR)
+ggplot(time_melt, aes(x=value.millennials_subset.YEAR, y=value.Freq, group=value.millennials_subset.REBORN, color=value.millennials_subset.REBORN))+
+  geom_line()+
+  facet_wrap(~value.millennials_subset.NEWREGIONID, ncol=2)+
+  ylab("Percentage")+xlab("Year")+scale_color_discrete(name="Born Again?")+
+  ggtitle("Millennial Born Again Percentage Since 2004")
+
+#Born Again Millennials v. Non-Millenials focus on the south
 BornAgainSouthDF<-subset(BornAgainDF, BornAgainDF$NEWREGIONID=="South")
 ggplot(BornAgainSouthDF, aes(x=MILLENNIALS,y=Freq, fill=REBORN))+
   geom_bar(stat="identity",position="dodge")+
   #facet_wrap(~NEWREGIONID, ncol=1)+
-  ylab("Percentage")+
+  ylab("Percentage")+xlab("")+
  # scale_y_continuous(labels = percent_format())+
   scale_fill_discrete(name="Born Again?")+
   ggtitle("Millennials v. Non-Millennial Born Again in the South")
