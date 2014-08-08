@@ -193,6 +193,13 @@ ggplot(subset(non_millennials, RELIG %in% c("PROTESTANT","CATHOLIC","NONE")), ae
   facet_wrap(~RELIG, ncol=3)+
   ggtitle("Non-millennials Identification as 'Born Again'")
 
+#non-millennials identification as born again by region
+ggplot(na.omit(subset(non_millennials, REBORN %in% c("YES","NO"))), aes(x=NEWREGIONID, fill=REBORN))+xlab("Born Again?")+
+  ylab("Percentage")+ggtitle("Percentage of Non-millennial Evangelicals in Each Region")+
+  geom_bar(aes(y=(..count..)/sum(..count..)), position="dodge")+
+  scale_fill_discrete(name="Been Born Again?")+
+  scale_y_continuous(labels=percent)
+
 #compare born again identification between millennials and non-millennials by region
 Nreligid_region$REBORNFAC<-factor(Nreligid_region$REBORN)
 #levels(Nreligid_region$REBORNFAC)<- c("Yes","No")
@@ -236,7 +243,9 @@ ggplot(time_melt, aes(x=Var.1, y=value, color=Var.2))+geom_line()+xlab("Year")+y
 #load 2000-2012 religion data
 # Create data if necessary - This should be run only on large ram comp.
 #gss2000_12<-religionModify(subset(gss1990, year>1999))
-gss2000_12<-subset(gss2000_12,REBORN %in% c("yes","no"))
+names(gss2000_2012)<-toupper(names(gss2000_2012))
+gss2000_12<-subset(gss2000_2012,REBORN %in% c("YES","NO"))
+rm(gss2000_2012)
 gss2000_12$REBORN<-factor(gss2000_12$REBORN)
 time_melt<-melt(prop.table(table(as.factor(gss2000_12$YEAR), gss2000_12$REBORN)), id.vars=YEAR)
 ggplot(time_melt, aes(x=Var.1, y=value, color=Var.2))+geom_line()+xlab("Year")+ylab("Percentage")+
