@@ -32,6 +32,7 @@ install.packages("Lahman")
 #evalCpp( "2LL" )
 
 devtools::install_github("hadley/dplyr")
+devtools::install_github("randywreed/gssReligion", auth_user="randywreed", auth_token="1834calvin")
 
 library("Hmisc")
 library("ggplot2")
@@ -42,7 +43,7 @@ library("foreign")
 library("reshape")
 library("scales")
 library("vcd")
-
+library("gssReligion")
 #copy gss 2008-2012 data
 #run dl_create_gss.R first to create data file (NOTE: heavy system requirements, please read the comments in file)
 # dl_create_gss.R creates gss2008_12.rda
@@ -188,13 +189,25 @@ ggplot(BornAgainDF, aes(x=MILLENNIALS, y=Freq, fill=REBORN ))+
   ylab("Percentage")+xlab("Non-Millennials v. Millennials")+
   scale_fill_discrete(name="Born Again?")
 
-#Time Series
+#Time Series - 4yr chart (2008-12)
 
 time_melt<-melt(prop.table(table(as.factor(Nreligid_region$YEAR),Nreligid_region$REBORNFAC)), id.vars=YEAR)
 ggplot(time_melt, aes(x=Var.1, y=value, color=Var.2))+geom_line()+xlab("Year")+ylab("Percentage")+
   scale_y_continuous( labels=percent_format())+
   scale_color_discrete(name="Born Again")+
-  ggtitle("Percentage of All Born Again Over Time")
+  ggtitle("Percentage of All Born Again Over Time (2008-12")
+
+#Time Series - 12 yr chart (2000-12)
+#load 2000-2012 religion data
+# Create data if necessary - This should be run only on large ram comp.
+#gss2000_12<-religionModify(subset(gss1990, year>1999))
+gss2000_12<-subset(gss2000_12,REBORN %in% c("yes","no"))
+gss2000_12$REBORN<-factor(gss2000_12$REBORN)
+time_melt<-melt(prop.table(table(as.factor(gss2000_12$YEAR), gss2000_12$REBORN)), id.vars=YEAR)
+ggplot(time_melt, aes(x=Var.1, y=value, color=Var.2))+geom_line()+xlab("Year")+ylab("Percentage")+
+  scale_y_continuous( labels=percent)+
+  scale_color_discrete(name="Born Again")+
+  ggtitle("Percentage of All Born Again Over Time (2000-12")
 
 millennials_subset<-subset(Nreligid_region, Nreligid_region$MILLENNIALS=="Millennials")
 Reborn_prop<-table(as.factor(millennials_subset$YEAR), 
@@ -400,13 +413,9 @@ mosaicplot(table6, col=rainbow(ncol(table6)))
 mosaicplot(table6, shade=T, main="Residuals for correlation Attendance/Affiliation")
 
 #correllate church attendance with none status
-<<<<<<< Updated upstream
 Nreligid_region$NONE<-ifelse(Nreligid_region$RELIG=="NONE",TRUE,FALSE)
 cor.test(as.numeric(Nreligid_region$ATTEND),as.numeric(Nreligid_region$NONE))
-=======
-Nreligid_region$NONE<-ifelse(Nreligid_region$RELIG=="None",TRUE,FALSE)
-cor.test(as.numeric(Nreligid_region$NEWATTEND),as.numeric(Nreligid_region$NONE))
->>>>>>> Stashed changes
+
 #Pearson's product-moment correlation
 #
 #data:  as.numeric(Nreligid_region$ATTEND) and as.numeric(Nreligid_region$NONE)
