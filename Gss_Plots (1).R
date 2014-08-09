@@ -14,6 +14,7 @@ install.packages("foreign")
 install.packages("reshape")
 install.packages("scales")
 install.packages("vcd")
+install.packages("stringr")
 
 #install dplyr and rcpp from github
 install.packages("devtools")
@@ -44,6 +45,7 @@ library("reshape")
 library("scales")
 library("vcd")
 library("gssReligion")
+library("stringr")
 #copy gss 2008-2012 data
 #run dl_create_gss.R first to create data file (NOTE: heavy system requirements, please read the comments in file)
 # dl_create_gss.R creates gss2008_12.rda
@@ -465,6 +467,47 @@ ggplot(relchange.all.melt.n, aes(x=RELIG16, y=value, fill=variable))+geom_bar(st
                       labels=c("Protestants","Catholics","None"))+
   xlab("Original Religious Identification")+ylab("Number")+
   ggtitle("Religious Change in Millennials All Regions")+facet_grid(.~NEWREGIONID)
+#stacked bar plot all regions exclude original identity count
+ggplot(subset(relchange.all.melt.n, RELIG16!=toupper(str_sub(variable,1,-3))), aes(x=RELIG16, y=value, fill=variable))+geom_bar(stat="identity", postition="dodge")+
+  scale_fill_discrete(name="Conversion N",
+                      # breaks=c("protestant.prop","catholic.prop","none.prop"),
+                      labels=c("Protestants","Catholics","None"))+
+  xlab("Original Religious Identification")+ylab("Number")+
+  ggtitle("Religious Change in Millennials All Regions (count)")+facet_grid(.~NEWREGIONID)+
+  scale_x_discrete(labels=c("Prot","Cath","None"))
+
+
+#birthright nones v. all nones
+orig16 <- ddply(.data = na.omit(subset(Nreligid_region, RELIG16 %in% c("PROTESTANT","CATHOLIC","NONE"))), .var = c("NEWREGIONID", "RELIG16", "MILLENNIALS"), .fun = function(x) {
+  data.frame(n = nrow(x),
+             none.n = nrow(subset(x, RELIG == "NONE")),
+             none.prop = (nrow(subset(x, RELIG ==
+                                        "NONE")) / nrow(x))*100
+  )
+}
+)
+orig16
+#plot birthright nones v. all by original religious ID Millennials
+ggplot(subset(orig16, MILLENNIALS=="Millennials"), aes(x=RELIG16, y=none.prop, fill=NEWREGIONID))+
+  geom_bar(stat="identity", position="dodge")+
+  ggtitle("Birthright Nones v.s. Converts - Millennials Only")+
+  xlab("Nones Religious Idenfication at 16")+ylab("Percentage")
+#plot birthright nones v. all by original Religous ID Non-Millennials only
+ggplot(subset(orig16, MILLENNIALS=="Non-Millennials"), aes(x=RELIG16, y=none.prop, fill=NEWREGIONID))+
+  geom_bar(stat="identity", position="dodge")+
+  ggtitle("Birthright Nones v.s. Converts - Non-Millennials Only")+
+  xlab("Nones Religious Idenfication at 16")+ylab("Percentage")
+#Plot birthright nones v. all by Original Religious ID (Count) Millennials only
+ggplot(subset(orig16, MILLENNIALS=="Millennials"), aes(x=RELIG16, y=none.n, fill=NEWREGIONID))+
+  geom_bar(stat="identity", position="dodge")+
+  ggtitle("Birthright Nones v.s. Converts - Millennials Only")+
+  xlab("Nones Religious Idenfication at 16 (count)")+ylab("Count")
+#Plot birthrigh nones v. all by Original Religious ID (Count) Non-Millennials
+ggplot(subset(orig16, MILLENNIALS=="Non-Millennials"), aes(x=RELIG16, y=none.n, fill=NEWREGIONID))+
+  geom_bar(stat="identity", position="dodge")+
+  ggtitle("Birthright Nones v.s. Converts - Non-Millennials Only")+
+  xlab("Nones Religious Idenfication at 16")+ylab("Count")
+
 
 #table with tables package
 
