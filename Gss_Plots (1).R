@@ -46,6 +46,8 @@ library("scales")
 library("vcd")
 library("gssReligion")
 library("stringr")
+
+
 #copy gss 2008-2012 data
 #run dl_create_gss.R first to create data file (NOTE: heavy system requirements, please read the comments in file)
 # dl_create_gss.R creates gss2008_12.rda
@@ -507,6 +509,15 @@ ggplot(subset(orig16, MILLENNIALS=="Non-Millennials"), aes(x=RELIG16, y=none.n, 
   geom_bar(stat="identity", position="dodge")+
   ggtitle("Birthright Nones v.s. Converts - Non-Millennials Only")+
   xlab("Nones Religious Idenfication at 16")+ylab("Count")
+
+#millennials attitude toward the church
+millennials_subset_noNA<-subset(millennials_subset, CONCHURH!="NA")
+ggplot(subset(millennials_subset_noNA, RELIG %in% c("PROTESTANT","CATHOLIC","NONE")), aes(x=CONCHURH, fill=CONCHURH))+
+  geom_bar(stat = "bin", position="dodge")+
+  scale_x_discrete(labels=c("Complete \n Confidence","Great Deal \n of Confidence","Some \n Confidence","Very Little \n Confidence","No Confidence \n at all","DK"))+
+  facet_wrap(~RELIG, ncol=1)
+
+ggplot(subset(millennials_subset_noNA, RELIG=="NONE"), aes(x=CONCHURH, fill=CONCHURH))+geom_bar(stat = "bin", position="dodge")
 
 
 #table with tables package
