@@ -607,6 +607,43 @@ hist(as.numeric(Nreligid_region$NEWATTEND))
 hist(as.numeric(gss_millennials$NEWATTEND))
 hist(as.numeric(gss_millenials_so$NEWATTEND))
 
+#Millennial Church attendance 2008-2012
+#create time series for millennials
+tab2 = function(x, useNA =FALSE) {
+  if(!useNA) if(any(is.na(x))) x = na.omit(x)
+  n = length(x)
+  out = data.frame(x,1) %>%
+    group_by(x) %>%
+    dplyr::summarise(
+      Freq    = length(X1),
+      Percent = (Freq/n)*100
+    ) %>%
+    dplyr::arrange(x)
+  ids = as.character(out$x)
+  ids[is.na(ids)] = '<NA>'
+  out = select(out, Freq, Percent)
+  out$cum = cumsum(out$Percent)
+  class(out)="data.frame"
+  out = rbind(out,c(n,1,NA))
+  rownames(out) = c(ids,'')
+  out
+}
 
 
+require('zoo')
+require('dplyr')
+millennials_at<-data.frame(YEAR=as.numeric(millennials_subset$YEAR), ATTEND=millennials_subset$ATTEND)
+millennials_attend_tab<-(tab<-prop.table(table(millennials_at),1)*100)
+millennials_attend_df<-data.frame(millennials_attend_tab)
+millennials_attend_df$YEAR<-as.numeric(levels(millennials_attend_df$YEAR))
+millennials_attendance <- tbl_df(millennials_attend_df %>% 
+                                   arrange(YEAR, ATTEND)%>%
+                                   #summarize(attendcount = tab2(millennials_at$ATTEND)$Percent) 
+                                   filter(ATTEND %in% c("MORE THN ONCE WK","EVERY WEEK","NEARLY EVERY WEEK", "2-3X A MONTH")) %>%
+                                   group_by(YEAR)%>%
+                                   summarize(yrattendcount=sum(Freq))
+)
+millennials_attendance$YEAR<-as.POSIXct(strptime(millennials_attendance$YEAR, "%Y"))
+millennials_attendance_ts<-read.zoo(millennials_attendance, index.column=millennials_attendance$YEAR, drop=FALSE)
 
+plot(millennials_attendance_ts)
