@@ -79,7 +79,7 @@ library(ggplot2)
  ```{r echo=FALSE, results='hide', warning=FALSE, message=FALSE}  
   <<ConversionRatesSetup>>
   <<RelChangeRegionsSetup>>
-  <<ConverMillennialsRegionStackedCount>>
+  <<ConverMillennialsRegionChord>>
 ````   
 But my task today is not to talk just about national trends but to focus on a particular region -- the South. Thus far I believe we have arrived at a couple of conclusions. Fewer millennials in the south are identifying with evangelicalism by claiming a born again experience. And Protestants millennials in the south are shedding their protestant identification in significant numbers.  
   Given the reality then of the millennial defection from institutionalized church.  The natural next question is what is driving millennials away from church? This is a question which has occupied David Kinnaman and the Barna Group. Kinnaman has concluded that there are several factors involved: The church is perceived as judgemental, homophobic and too political. Likewise the concerns of the church are not seen as relevant to the lives of millennials. The Public Religion Research Institute has additionally shown that part of the millennial negative perception of the Evangelical church stems from its stance against homosexuality. 

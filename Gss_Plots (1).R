@@ -15,6 +15,8 @@ install.packages("reshape")
 install.packages("scales")
 install.packages("vcd")
 install.packages("stringr")
+install.packages("tidyr")
+install.packages("plyr")
 
 #install dplyr and rcpp from github
 install.packages("devtools")
@@ -27,6 +29,8 @@ install.packages("Matrix")
 install.packages("mgcv")
 install.packages("Lahman")
 install.packages("knitr")
+install.packages("tidyr")
+install.packages("circlize")
 #these may not be necessary and errored anyway
 #devtools::install_github( "romainfrancois/Rcpp11" )
 #require( Rcpp11 )
@@ -49,7 +53,9 @@ library("vcd")
 library("gssReligion")
 library("stringr")
 library("knitr")
-
+library("tidyr")
+library("plyr")
+library("circlize")
 #copy gss 2008-2012 data
 #run dl_create_gss.R first to create data file (NOTE: heavy system requirements, please read the comments in file)
 # dl_create_gss.R creates gss2008_12.rda
@@ -513,7 +519,8 @@ ggplot(relchange.all.melt, aes(x=RELIG16,y=value, fill=variable))+geom_bar(stat=
 
 ## @knitr ConverMillennialsRegionStacked
 #stacked bar plot all regions exclude original identity percentages
-ggplot(subset(relchange.all.melt, RELIG16.lab!=toupper(variable.lab)), aes(x=RELIG16,y=value, fill=variable))+geom_bar(stat="identity")+
+ggplot(subset(relchange.all.melt, RELIG16.lab!=toupper(variable.lab)), aes(x=RELIG16,y=value, fill=variable))+
+  geom_bar(stat="identity")+
   xlab("Original Religious Affilliation")+ylab("Percentage")+
   scale_fill_discrete(name="Conversion\nType",
                       #                    breaks=c("protestant.prop", "catholic.prop", "none.prop"),
@@ -523,12 +530,30 @@ ggplot(subset(relchange.all.melt, RELIG16.lab!=toupper(variable.lab)), aes(x=REL
 
 ## @knitr ConverMillennialsRegionStackedCount
 #stacked bar plot all regions include original identity count
-ggplot(relchange.all.melt.n, aes(x=RELIG16, y=value, fill=variable))+geom_bar(stat="identity", postition="dodge")+
+ggplot(relchange.all.melt.n, aes(x=RELIG16, y=value, fill=variable))+geom_bar(stat="identity", position="dodge")+
   scale_fill_discrete(name="Conversion N",
                      # breaks=c("protestant.prop","catholic.prop","none.prop"),
                       labels=c("Protestants","Catholics","None"))+
   xlab("Original Religious Identification")+ylab("Number")+
   ggtitle("Religious Change in Millennials All Regions")+facet_grid(.~NEWREGIONID)
+
+## @knitr ConverMillennialsRegionChord
+# pare down datafrome to value, RELIG16.lab, and variable.lab and NEWREGIONID
+
+chordRelchange<-relchange.all.melt %>%
+  mutate(RELIG16.lab=substr(RELIG16.lab,1,4)) %>%
+  mutate(RELIG16.lab=tolower(paste(NEWREGIONID, RELIG16.lab, sep="-"))) %>%
+  select(RELIG16.lab, variable.lab, value)
+chordRelchange$RELIG16.lab=str_wrap(chordRelchange$RELIG16.lab, width=6)
+chordRelchange$variable.lab<-sub("^", "to ", chordRelchange$variable.lab)
+par(mar=c(0,0,0,0))
+par(oma=c(0,0,0,0))
+#circos.axis(labels.cex=par(3))
+circos.clear()
+chordDiagram(chordRelchange, directional=1)
+
+## @knitr ConvMillennialsRegionLadder
+
 
 ## @knitr ConvMillennialsRegionCount
 #stacked bar plot all regions exclude original identity count
@@ -721,3 +746,18 @@ millennials_attendance$YEAR<-as.POSIXct(strptime(millennials_attendance$YEAR, "%
 millennials_attendance_ts<-read.zoo(millennials_attendance, index.column=millennials_attendance$YEAR, drop=FALSE)
 
 plot(millennials_attendance_ts)
+
+#stackoverflow reproducible
+Region<-rep(c('Midwest'),9)
+RELIG16<-rep(c('Protestant','Catholic','None'),3)
+OutRel<-rep(c('Protestant'), 3) 
+OutRel<-append(OutRel, rep(c('Catholic'),3))
+OutRel<-append(OutRel, rep(c('None'),3))
+value<-rep(c(77.35, 10.25, 18.18),3)
+df=data.frame(Region,RELIG16,OutRel,value)
+ggplot(df, aes(x=RELIG16,y=value, fill=OutRel))+geom_bar(stat="identity")+
+  xlab("Original Religious Affilliation")+ylab("Percentage")+
+  scale_fill_discrete(name="Conversion\nType",
+                      #                    breaks=c("protestant.prop", "catholic.prop", "none.prop"),
+                      labels=c("to Protestant", "to Catholicism", "to None"))+
+  ggtitle("Conversion of All Millennials By Region")
