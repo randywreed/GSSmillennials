@@ -37,7 +37,7 @@ install.packages("circlize")
 #evalCpp( "2LL" )
 
 devtools::install_github("hadley/dplyr")
-devtools::install_github("randywreed/gssReligion", auth_user="randywreed", auth_token="1834calvin")
+devtools::install_github("randywreed/gssReligion")
 
 ## @knitr setup
 
