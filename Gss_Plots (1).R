@@ -119,7 +119,7 @@ ggplot(subset(Nreligid_region, REBORN %in% c("YES","NO")), aes(x=REBORN, fill=NE
   geom_bar(aes(y=(..count..)/sum(..count..)), position="dodge")+
     scale_fill_discrete(name="Been Born Again?")+
     scale_y_continuous(labels=percent)+
-    annotate("text",label="General Social Survey 2008-2012", x=1.5, y=.01, size=3, color="black")
+    caption="General Social Survey 2008-2012 v2"
 
 
 ## @knitr EvangelicalByRegionCompareYN
@@ -129,7 +129,7 @@ ggplot(na.omit(subset(Nreligid_region, REBORN %in% c("YES","NO"))), aes(x=NEWREG
   geom_bar(aes(y=(..count..)/sum(..count..)), position="dodge")+
   scale_fill_discrete(name="Been Born Again?")+
   scale_y_continuous(labels=percent)+
-  annotate("text",label="General Social Survey 2008-2012", x=1.5, y=.01, size=3, color="black")
+  labs(caption="General Social Survey 2008-2012 v2")
 
     
 ## @knitr MillennialsBornAgainSetup
@@ -141,15 +141,16 @@ levels(gss_millennials$REBORN)<-c("Yes","No")
 gss_millennials<-subset(gss_millennials, toupper(REBORN) %in% c("YES","NO"))
 gss_millennials$REBORN<-factor(gss_millennials$REBORN)
 #ggplot(gss_millennials, aes(x=gss_millennials$REBORN, fill=gss_millennials$NEWREGIONID))+geom_bar(stat="bin", position="dodge")+xlab("Born Again")+ylab("Number of Adherents")+ggtitle("Count of Millennials Are Born Again")+scale_fill_discrete(name="Region")
-born_again_and_millennials <- subset(melt(round((prop.table(table(gss_millennials$REBORN, gss_millennials$NEWREGIONID),2)*100),3)), toupper(Var.1) %in% c("YES","NO"))
+born_again_and_millennials <- subset(melt(round((prop.table(table(gss_millennials$REBORN, gss_millennials$NEWREGIONID),2)*100),3)), toupper(Var1) %in% c("YES","NO"))
 
 ## @knitr MillennialBornAgainByRegion
-ggplot(born_again_and_millennials, aes(x=born_again_and_millennials$Var.1, y=born_again_and_millennials$value, fill=born_again_and_millennials$Var.2))+
+ggplot(born_again_and_millennials, aes(x=born_again_and_millennials$Var1, y=born_again_and_millennials$value, fill=born_again_and_millennials$Var2))+
   geom_bar(stat="identity", position="dodge")+
   ylab("Percentage")+xlab("Born Again?")+
   ggtitle("Millennial Identification as 'Born Again'")+
   scale_fill_discrete(name="Region")+
-  annotate("text",label="General Social Survey 2008-2012", x=1.5, y=.01, size=3, color="black")
+  labs(caption="General Social Survey 2008-12")
+  #annotate("text",label="General Social Survey 2008-2012", x=1.5, y=.01, size=3, color="black")
 
 
 #table(gss_millennials$REBORN, gss_millennials$RELIG)
