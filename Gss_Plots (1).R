@@ -37,15 +37,9 @@ install.packages("circlize")
 #evalCpp( "2LL" )
 
 devtools::install_github("hadley/dplyr")
-<<<<<<< HEAD
-devtools::install_github("randywreed/gssReligion", auth_user="randywreed", auth_token="1834calvin")
-## @knitr gssSetup
-=======
 devtools::install_github("randywreed/gssReligion")
 
 ## @knitr setup
-
->>>>>>> 0fdf2992d1410c1fef910265162fc54405f8f9f9
 library("Hmisc")
 library("ggplot2")
 library("tables")
@@ -107,27 +101,17 @@ gss_millennials<-subset(Nreligid_region, Nreligid_region$MILLENNIALS=="Millennia
 #Southern Millennials only
 gss_millenials_so<-subset(gss_millennials, gss_millennials$NEWREGIONID=="South")
 
-<<<<<<< HEAD
 ## @knitr EvangelicalPresence
-=======
-## @knitr EvangelicalCount
->>>>>>> 0fdf2992d1410c1fef910265162fc54405f8f9f9
 #Evangelical presence in the country
 ggplot(subset(Nreligid_region, REBORN %in% c("YES","NO")), aes(x=REBORN, fill=REBORN))+
   xlab("Born Again Experience?")+
   ylab("Percentage")+ggtitle("National percentage of individuals who have had a 'Born Again' Experience")+
   geom_bar(aes(y=(..count..)/sum(..count..)), position="dodge")+
   theme(legend.position="none")+
-<<<<<<< HEAD
-  scale_y_continuous(labels=percent)
-
-## @knitr EvangelicalRegionalPresence
-=======
   scale_y_continuous(labels=percent)+
   annotate("text",label="General Social Survey 2008-2012", x=1.5, y=.01, size=3, color="black")
   
 ## @knitr EvangelicalByRegion
->>>>>>> 0fdf2992d1410c1fef910265162fc54405f8f9f9
 #Evangelical presence in the country by region
 ggplot(subset(Nreligid_region, REBORN %in% c("YES","NO")), aes(x=REBORN, fill=NEWREGIONID))+xlab("Born Again?")+
   ylab("Percentage")+ggtitle("Percentage of Evangelicals in Each Region")+
@@ -136,28 +120,17 @@ ggplot(subset(Nreligid_region, REBORN %in% c("YES","NO")), aes(x=REBORN, fill=NE
     scale_y_continuous(labels=percent)+
     caption="General Social Survey 2008-2012 v2"
 
-<<<<<<< HEAD
-## @knitr RegionalComparisonBornAgain
-=======
-
 ## @knitr EvangelicalByRegionCompareYN
->>>>>>> 0fdf2992d1410c1fef910265162fc54405f8f9f9
 #Regional Comparison of Born Again
 ggplot(na.omit(subset(Nreligid_region, REBORN %in% c("YES","NO"))), aes(x=NEWREGIONID, fill=REBORN))+xlab("Born Again?")+
   ylab("Percentage")+ggtitle("Percentage of Evangelicals in Each Region")+
   geom_bar(aes(y=(..count..)/sum(..count..)), position="dodge")+
   scale_fill_discrete(name="Been Born Again?")+
-<<<<<<< HEAD
-  scale_y_continuous(labels=percent)
-    
-## @knitr BornAgainMillennials
-=======
   scale_y_continuous(labels=percent)+
   labs(caption="General Social Survey 2008-2012 v2")
 
     
 ## @knitr MillennialsBornAgainSetup
->>>>>>> 0fdf2992d1410c1fef910265162fc54405f8f9f9
 #percentage of millennials who are born again
 gss_millennials$REBORN<-factor(gss_millennials$REBORN)
 levels(gss_millennials$REBORN)<-c("Yes","No")
@@ -165,21 +138,6 @@ levels(gss_millennials$REBORN)<-c("Yes","No")
 #round((prop.table(table(gss_millennials$REBORN, gss_millennials$NEWREGIONID),2)*100),3)
 gss_millennials<-subset(gss_millennials, toupper(REBORN) %in% c("YES","NO"))
 gss_millennials$REBORN<-factor(gss_millennials$REBORN)
-<<<<<<< HEAD
-
-
-
-born_again_and_millennials <- subset(melt(round((prop.table(table(gss_millennials$REBORN, gss_millennials$NEWREGIONID),2)*100),3)), toupper(Var.1) %in% c("YES","NO"))
-
-## @knitr BornAgainMillennialsCount
-ggplot(gss_millennials, aes(x=gss_millennials$REBORN, fill=gss_millennials$NEWREGIONID))+geom_bar(stat="bin", position="dodge")+xlab("Born Again")+ylab("Number of Adherents")+ggtitle("Count of Millennials Are Born Again")+scale_fill_discrete(name="Region")
-
-## @knitr BornAgainMillennialsPercentage
-ggplot(born_again_and_millennials, aes(x=born_again_and_millennials$Var.1, y=born_again_and_millennials$value, fill=born_again_and_millennials$Var.2))+geom_bar(stat="identity", position="dodge")+ylab("Percentage")+xlab("Born Again?")+ggtitle("Millennial Identification as 'Born Again'")+scale_fill_discrete(name="Region")
-#table(gss_millennials$REBORN, gss_millennials$RELIG)
-#round((prop.table(table(gss_millennials$REBORN, gss_millennials$RELIG),2)*100),3)
-#round((prop.table(table(Nreligid_region$RELIG, Nreligid_region$REBORN, Nreligid_region$MILLENNIALS),1)*100),3)
-=======
 #ggplot(gss_millennials, aes(x=gss_millennials$REBORN, fill=gss_millennials$NEWREGIONID))+geom_bar(stat="bin", position="dodge")+xlab("Born Again")+ylab("Number of Adherents")+ggtitle("Count of Millennials Are Born Again")+scale_fill_discrete(name="Region")
 born_again_and_millennials <- subset(melt(round((prop.table(table(gss_millennials$REBORN, gss_millennials$NEWREGIONID),2)*100),3)), toupper(Var1) %in% c("YES","NO"))
 
@@ -191,8 +149,6 @@ ggplot(born_again_and_millennials, aes(x=born_again_and_millennials$Var1, y=born
   scale_fill_discrete(name="Region")+
   labs(caption="General Social Survey 2008-12")
   #annotate("text",label="General Social Survey 2008-2012", x=1.5, y=.01, size=3, color="black")
->>>>>>> 0fdf2992d1410c1fef910265162fc54405f8f9f9
-
 
 #table(gss_millennials$REBORN, gss_millennials$RELIG)
 #round((prop.table(table(gss_millennials$REBORN, gss_millennials$RELIG),2)*100),3)
@@ -200,15 +156,13 @@ ggplot(born_again_and_millennials, aes(x=born_again_and_millennials$Var1, y=born
 
 ## @knitr MillennialvNonMillennialBornAgainSetup
 #Millennials v. Non-Millennials self-identified Born Again
-<<<<<<< HEAD
-'''round((prop.table(table(Nreligid_region$REBORN, Nreligid_region$MILLENNIALS),2)*100),3)
-=======
-#round((prop.table(table(Nreligid_region$REBORN, Nreligid_region$MILLENNIALS),2)*100),3)
->>>>>>> 0fdf2992d1410c1fef910265162fc54405f8f9f9
-BAtab<-summary(MILLENNIALS ~ REBORN, method="reverse", data=Nreligid_region)
-#BAtab
-#plot(BAtab)
-'''
+
+# round((prop.table(table(Nreligid_region$REBORN, Nreligid_region$MILLENNIALS),2)*100),3)
+# #round((prop.table(table(Nreligid_region$REBORN, Nreligid_region$MILLENNIALS),2)*100),3)
+# BAtab<-summary(MILLENNIALS ~ REBORN, method="reverse", data=Nreligid_region)
+# #BAtab
+# #plot(BAtab)
+
 
 #Protestants born again, millennial v non-millennial
 Protestant_Only<-subset(Nreligid_region, Nreligid_region$RELIG=="PROTESTANT")
@@ -224,22 +178,14 @@ table3<-tabular(Heading("Non-Millennials Identification as 'Born Again'")*REBORN
 #table3
 #table3[1:2,c(1:2,4)]
 
-<<<<<<< HEAD
-## @knitr nonMillennialBornAgainPlot
-=======
 ## @knitr nonmillennialIdentificationByRegion
->>>>>>> 0fdf2992d1410c1fef910265162fc54405f8f9f9
 ggplot(subset(non_millennials, RELIG %in% c("PROTESTANT","CATHOLIC","NONE")), aes(x=REBORN, fill=REBORN))+
   geom_bar(stat="count", position="dodge")+
   facet_wrap(~RELIG, ncol=3)+
   ggtitle("Non-millennials Identification as 'Born Again'")+
   annotate("text",label="General Social Survey 2008-2012", x=1.5, y=.01, size=3, color="black")
 
-<<<<<<< HEAD
-## @knitr nonMillennialBornAgainByRegion
-=======
 ## @knitr PercentageOfNonMillennialEVsbyRegion
->>>>>>> 0fdf2992d1410c1fef910265162fc54405f8f9f9
 #non-millennials identification as born again by region
 ggplot(na.omit(subset(non_millennials, REBORN %in% c("YES","NO"))), aes(x=NEWREGIONID, fill=REBORN))+
   xlab("Born Again?")+
@@ -250,11 +196,7 @@ ggplot(na.omit(subset(non_millennials, REBORN %in% c("YES","NO"))), aes(x=NEWREG
   scale_y_continuous(labels=percent)+
   annotate("text",label="General Social Survey 2008-2012", x=1.5, y=.01, size=3, color="black")
 
-<<<<<<< HEAD
-## @knitr BornAgainMilvNonMilSetup
-=======
 ## @knitr CompareBornAgainMillennialsAndNonByRegion
->>>>>>> 0fdf2992d1410c1fef910265162fc54405f8f9f9
 #compare born again identification between millennials and non-millennials by region
 Nreligid_region$REBORNFAC<-factor(Nreligid_region$REBORN)
 #levels(Nreligid_region$REBORNFAC)<- c("Yes","No")
@@ -280,12 +222,7 @@ BornAgainDF<-rename(BornAgainDF, c("Var1"="NEWREGIONID","Var2"="REBORN","Var3"="
 #   scale_fill_discrete(name="Born Again?")+
 #   scale_y_continuous(labels = percent_format())
 
-<<<<<<< HEAD
-## @knitr MillvNonMilBornAgainPlot
-=======
-
 ## @knitr nonMillennialsvMillennialsBornAgain
->>>>>>> 0fdf2992d1410c1fef910265162fc54405f8f9f9
 ggplot(BornAgainDF, aes(x=MILLENNIALS, y=Freq, fill=REBORN ))+
   geom_bar( stat="identity", position="dodge")+
   facet_wrap(~NEWREGIONID, ncol=2)+
