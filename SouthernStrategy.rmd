@@ -1,0 +1,87 @@
+----
+Title: "The Southern Strategy"
+Subtitle: "Receptivity of Southern Millennials to the Emerging Church"
+Author: "Randall Reed, Ph.D."
+output: html_document:
+----
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+``` {r echo=FALSE}
+library("knitr")
+read_chunk('Gss_Plots (1).R')
+```
+## Introduction
+<div class="notes">
+The Emerging Church is one of the most interesting movements in Western Christianity today. A movement that sees itself as specifically attuned to the postmodern world, the Emerging Church has staked out positions that are pro-gay, socially and economically progressive, and religiously inclusive. This might seem a movement tailor made for millennials who generally hold these same values. Studies that have looked at the Emerging Church have often commented that this movement addresses the concerns of millennials. However, none of these studies have been centered in the South. This deficiency I hope to begin to correct in this paper. 
+  The Emerging Church is often characterized as a post-evangelical movement. Many of the leading voices in the Emerging Church, Brian Mclaren, Rob Bell, Peter Rollins, Nadia Boltz-Weber have Evangelical backgrounds. Evangelical categories and concerns often are particularly at issue for Emerging Church leaders (e.g. Rob Bell’s rethinking of Hell in “Love Wins”) and Evangelical leaders have often targeted Emerging Church thinkers (e.g. Ron Piper’s “Farewell Rob Bell” tweet that precipitated much of the controversy around the Love Wins book).
+  At the same time it is the south that remains the bulwark of evangelicalism. Whereas Evangelicals make up 26% of the U.S. Population, in the South Evangelicals range from 31% in Louisiana to 53% in Arkansas. A look at the Pew Map shows a clear clustering of Evangelicals in the South and while other regions have Evangelical populations, none have a larger percentage than the South. If the Emerging Church, then, is to change Evangelical Protestantism as we know it, then its mission field (if you will pardon the phrase) must be the South. 
+  The other aspect that is key here is millennials. The millennial generation has made headlines by its abandonment of traditional institutional church with the rise of the millennial “nones.” While the implications of the category of “none” has been questioned by some, there is no doubt that there has been a loss of membership in both mainline and Evangelical Churches. Millennials are dropping out of church, and whether they are taking the moniker of “none” or not, their absence in church pews is a real phenomena charted both by national surveys as well as by denominational reports. 
+	Which brings us to the question at hand, which is in two parts. First, is there a trend toward evangelical defection in the South like there is in other regions of the country and what implications can be drawn from the answer to that question? Second, is their a receptivity that can be seen towards the message of the Emerging Church and what are the openings and barriers to its acceptance by southern millennials. 
+	To answer the first question about church defection in the south, I will look at the data provided by the General Social Survey which allows the disaggregation of data by region in conjunction with other surveys that have also touched on this issue. To answer the second question about the receptivity of millennials to the message of the Emerging Church I will draw upon qualitative research that I have been conducting with focus groups of Southern Millennials. I must caution that this research is on-going and thus incomplete, but I believe that at this point I can make some preliminary observations that are relevant to this question. 
+
+## Evangelicals
+
+```{r echo=FALSE, results='hide', warning=FALSE, message=FALSE}
+library(ggplot2)
+<<setup>>
+<<EvangelicalCount>>
+```
+<div class="notes">
+  Let us begin with the question regarding the presence of Evangelicals in both millennial and non-millennial populations. The General Social Survey puts the national percentage of Evangelicals at 40% which is slightly higher than Pew (and probably overstated) but will act as a baseline for comparison. Here we can see among the general population non-evangelicals outnumber Evangelicals.
+  
+```{r echo=FALSE, results='hide', warning=FALSE, message=FALSE}  
+<<EvangelicalByRegionCompareYN>>
+````
+<div class="notes">
+  Our understanding becomes more nuanced when we look at this same data from a regional perspective.  The Midwest and the South have the most individuals who have had a Born Again experience. But also only in one part of the country do those who have had a Born Again experience outnumber those who have not, that is the South.
+  
+```{r echo=FALSE, results='hide', warning=FALSE, message=FALSE}  
+<<MillennialsBornAgainSetup>>
+  <<MillennialvNonMillennialBornAgainSetup>>
+  <<CompareBornAgainMillennialsAndNonByRegion>>
+  <<nonMillennialsvMillennialsBornAgain>>
+````
+ <div class="notes">
+ However when we compare non-milennials and millennials by region, once again the south stands out. 
+  
+ ```{r echo=FALSE, results='hide', warning=FALSE, message=FALSE}  
+  <<MillennialvNonMillennialsSouth>>
+````
+  
+<div class="notes">
+  In the south more non-millennials claim to have had a born again experience than not. However for millennials this is reversed, more millennials claim not to have had a born again experience than those who say they have. While the gap between the “yes”es and the “no”s increases across all regions: more millennials say “no” than non-millennials. It is only in the South where there is this kind of reversal. 
+  This leads us to the question of the religious “nones.” There has been much made of the advent of the “nones” and some criticism about the category as well. As a category it is neither all meaningful nor meaningless as different people have alternatively exalted or decried. It is ultimately a variable and as a variable it can tell us whether more or less people are rejecting institutional religious labels, but it cannot tell us why or what it is that these “nones” actually believe. These questions are left to other variables,  more focused surveys and most importantly qualitative work still to be done. Nevertheless it is worth exploring the religious identification variable for what it can tell us.
+
+```{r echo=FALSE, results='hide', warning=FALSE, message=FALSE}  
+  <<AllReligiousIDbyRegionSetup>>
+  <<AllReligiousIDbyRegionPlot>>
+````
+
+<div class="notes">
+ If we go a little further and compare millennial nones to non-millennial nones what we see is the millennial nones significantly outpace non-millennial nones in every region. Millennial nones are a distinctive reality. Again we may not be able to say what this means, but it is certainly a phenomenon that requires further study.
+
+```{r echo=FALSE, results='hide', warning=FALSE, message=FALSE}  
+  <<comparisontable>>
+````
+<div class ="notes">
+  So the next question is where are these nones coming from? This chart is a little difficult to read so I apologize for that. The x axis indicates the original religious identification of the individual when they were 16 (protestant, catholic or none). The color indicates the current religious identification at the time of the survey (Red=Protestant, Green=Catholic, Blue=None). What is important is that you can see  who is going where. For instance. in the midwest, the majority of protestants who are converting, are converting to none, a few are converting to catholicism. This is likewise true of catholics, about 10% convert to protestantism, and the larger share convert to none. Nones are converting (about 18%) to protestantism. Now a couple observations that are appropriate here. First, there is conversion both ways. Protestant and Catholics are becoming Nones, but Nones are also becoming Protestant and sometimes Catholics. Second, what you don’t see in this chart (because it made it even more complicated) is religious retention, all religious identifications are also keeping a majority of their millennials, even in the north where over 30% of protestants are defecting, the reality is almost 70% are staying put. Third, none’s are not strictly the product of conversion, there are a group of them that are nones to begin with, perhaps better: “cradle nones”. Some of the growth of the nones is second generation nones, nones made the old fashion way, what we might call (drawing on my Quaker background) “birthright nones.” Among Millennials, birthright nones constitute about upwards of 70% of the nones population (depending on region).
+  
+ ```{r echo=FALSE, results='hide', warning=FALSE, message=FALSE}  
+  <<ConversionRatesSetup>>
+  <<RelChangeRegionsSetup>>
+  <<ConverMillennialsRegionStacked>>
+```` 
+<div class="notes">
+  However, I do not want to give the impression that the trade between, say, protestants and nones is even, both swapping 20% so it comes out a wash.  Thus it is helpful to look at actual numbers, and when we do that we see that trade is significantly disproportionate whereby the Protestant and Catholics are giving up significantly more people to the nones than vice-versa. So the growth of the None’s is neither insubstantial nor regionally specific. It spans the nation, with some regional variation, but it is present in all regions.
+  
+ ```{r echo=FALSE, results='hide', warning=FALSE, message=FALSE}  
+  <<ConversionRatesSetup>>
+  <<RelChangeRegionsSetup>>
+  <<ConverMillennialsRegionChord>>
+````   
+But my task today is not to talk just about national trends but to focus on a particular region -- the South. Thus far I believe we have arrived at a couple of conclusions. Fewer millennials in the south are identifying with evangelicalism by claiming a born again experience. And Protestants millennials in the south are shedding their protestant identification in significant numbers.  
+  Given the reality then of the millennial defection from institutionalized church.  The natural next question is what is driving millennials away from church? This is a question which has occupied David Kinnaman and the Barna Group. Kinnaman has concluded that there are several factors involved: The church is perceived as judgemental, homophobic and too political. Likewise the concerns of the church are not seen as relevant to the lives of millennials. The Public Religion Research Institute has additionally shown that part of the millennial negative perception of the Evangelical church stems from its stance against homosexuality. 
+  In to this environment comes the Emerging Church. By all accounts it would seem that the Emerging Church would be ideally suited to appeal to millennials.  Its emphasis on openness, tolerance and focus on discussion over doctrinal purity seems tailor made for the millennials. My own research has focused particularly on this question but with a regional emphasis precisely because of the aforementioned strength of evangelicals in the south: Are southern millennials receptive to the Emerging Church?  Using a series of focus groups of millennials I have posed this and related questions in an attempt to provide some insights unavailable in survey data. The results so far are preliminary, but begin to speak to some of these issues.
+
