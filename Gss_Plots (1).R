@@ -359,6 +359,7 @@ colnames(nones_compare)<-c("Millennials Midwest","All Midwest", "Millennials Nor
 #text(compare_nones_chart, nones_compare, labels=nones_compare, pos=3, cex=0.75)
 #abline(h=mean(nones_compare))
 
+
 #create a table ggplot of millennials nones v. all nones
 #library(reshape)
 millennials_summary_by_region<-subset(melt(millennials_table_by_revised_region), Var.1=="NONE" & Var.2 !="Not Assigned")
@@ -550,9 +551,6 @@ par(oma=c(0,0,0,0))
 #circos.axis(labels.cex=par(3))
 circos.clear()
 chordDiagram(chordRelchange, directional=1)
-
-## @knitr ConvMillennialsRegionLadder
-
 
 ## @knitr ConvMillennialsRegionCount
 #stacked bar plot all regions exclude original identity count
