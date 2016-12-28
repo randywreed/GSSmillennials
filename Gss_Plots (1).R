@@ -37,7 +37,7 @@ install.packages("circlize")
 #evalCpp( "2LL" )
 
 devtools::install_github("hadley/dplyr")
-devtools::install_github("randywreed/gssReligion", auth_token = "2ea532a43d6c971f3affd28322d1f2ee7f39f26d")
+devtools::install_github("randywreed/gssReligion", auth_token = Sys.getenv("GITHUB_PAT"))
 
 ## @knitr setup
 library("Hmisc")
