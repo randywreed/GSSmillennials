@@ -38,7 +38,7 @@ library(ggplot2)
   Our understanding becomes more nuanced when we look at this same data from a regional perspective.  The Midwest and the South have the most individuals who have had a Born Again experience. But also only in one part of the country do those who have had a Born Again experience outnumber those who have not, that is the South.
   
 ```{r echo=FALSE, results='hide', warning=FALSE, message=FALSE}  
-<<MillennialsBornAgainSetup>>
+  <<MillennialsBornAgainSetup>>
   <<MillennialvNonMillennialBornAgainSetup>>
   <<CompareBornAgainMillennialsAndNonByRegion>>
   <<nonMillennialsvMillennialsBornAgain>>

@@ -37,7 +37,7 @@ install.packages("circlize")
 #evalCpp( "2LL" )
 
 devtools::install_github("hadley/dplyr")
-devtools::install_github("randywreed/gssReligion")
+devtools::install_github("randywreed/gssReligion", auth_token = "2ea532a43d6c971f3affd28322d1f2ee7f39f26d")
 
 ## @knitr setup
 library("Hmisc")
@@ -133,16 +133,18 @@ ggplot(na.omit(subset(Nreligid_region, REBORN %in% c("YES","NO"))), aes(x=NEWREG
 ## @knitr MillennialsBornAgainSetup
 #percentage of millennials who are born again
 gss_millennials$REBORN<-factor(gss_millennials$REBORN)
-levels(gss_millennials$REBORN)<-c("Yes","No")
+#levels(gss_millennials$REBORN)<-c("Yes","No")
 #round((prop.table(table(gss_millennials$RELIG, gss_millennials$NEWREGIONID),2)*100),3)
 #round((prop.table(table(gss_millennials$REBORN, gss_millennials$NEWREGIONID),2)*100),3)
-gss_millennials<-subset(gss_millennials, toupper(REBORN) %in% c("YES","NO"))
+gss_millennials<-subset(gss_millennials, REBORN %in% c("Yes","No"))
 gss_millennials$REBORN<-factor(gss_millennials$REBORN)
 #ggplot(gss_millennials, aes(x=gss_millennials$REBORN, fill=gss_millennials$NEWREGIONID))+geom_bar(stat="bin", position="dodge")+xlab("Born Again")+ylab("Number of Adherents")+ggtitle("Count of Millennials Are Born Again")+scale_fill_discrete(name="Region")
-born_again_and_millennials <- subset(melt(round((prop.table(table(gss_millennials$REBORN, gss_millennials$NEWREGIONID),2)*100),3)), toupper(Var1) %in% c("YES","NO"))
+born_again_and_millennials<-as.data.frame(melt(round((prop.table(table(gss_millennials$REBORN, gss_millennials$NEWREGIONID),2)*100),3)))
+#born_again_and_millennials<-subset(born_again_and_millennials_melt, Var.1 %in% c("Yes","No"))
+#born_again_and_millennials <- subset(melt(round((prop.table(table(gss_millennials$REBORN, gss_millennials$NEWREGIONID),2)*100),3)), Var.1 %in% c("Yes","No"))
 
 ## @knitr MillennialBornAgainByRegion
-ggplot(born_again_and_millennials, aes(x=born_again_and_millennials$Var1, y=born_again_and_millennials$value, fill=born_again_and_millennials$Var2))+
+ggplot(born_again_and_millennials, aes(x=born_again_and_millennials$Var.1, y=born_again_and_millennials$value, fill=born_again_and_millennials$Var.2))+
   geom_bar(stat="identity", position="dodge")+
   ylab("Percentage")+xlab("Born Again?")+
   ggtitle("Millennial Identification as 'Born Again'")+
