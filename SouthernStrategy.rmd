@@ -63,6 +63,7 @@ library(ggplot2)
  If we go a little further and compare millennial nones to non-millennial nones what we see is the millennial nones significantly outpace non-millennial nones in every region. Millennial nones are a distinctive reality. Again we may not be able to say what this means, but it is certainly a phenomenon that requires further study.
 
 ```{r echo=FALSE, results='hide', warning=FALSE, message=FALSE}  
+  <<SetupMillennialReligiousIDbyregion>>
   <<comparisontable>>
 ````
 <div class ="notes">

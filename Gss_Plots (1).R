@@ -11,7 +11,7 @@ install.packages("gridExtra")
 install.packages("Rcpp")
 install.packages("dplyr")
 install.packages("foreign")
-install.packages("reshape")
+install.packages("reshape2")
 install.packages("scales")
 install.packages("vcd")
 install.packages("stringr")
@@ -46,7 +46,7 @@ library("tables")
 library("gridExtra")
 library("dplyr")
 library("foreign")
-library("reshape")
+library("reshape2")
 library("scales")
 library("vcd")
 library("gssReligion")
@@ -139,12 +139,12 @@ gss_millennials$REBORN<-factor(gss_millennials$REBORN)
 gss_millennials<-subset(gss_millennials, REBORN %in% c("Yes","No"))
 gss_millennials$REBORN<-factor(gss_millennials$REBORN)
 #ggplot(gss_millennials, aes(x=gss_millennials$REBORN, fill=gss_millennials$NEWREGIONID))+geom_bar(stat="bin", position="dodge")+xlab("Born Again")+ylab("Number of Adherents")+ggtitle("Count of Millennials Are Born Again")+scale_fill_discrete(name="Region")
-born_again_and_millennials<-as.data.frame(melt(round((prop.table(table(gss_millennials$REBORN, gss_millennials$NEWREGIONID),2)*100),3)))
+born_again_and_millennials<-melt(round(prop.table(table(gss_millennials$REBORN, gss_millennials$NEWREGIONID),2)*100,3))
 #born_again_and_millennials<-subset(born_again_and_millennials_melt, Var.1 %in% c("Yes","No"))
 #born_again_and_millennials <- subset(melt(round((prop.table(table(gss_millennials$REBORN, gss_millennials$NEWREGIONID),2)*100),3)), Var.1 %in% c("Yes","No"))
 
 ## @knitr MillennialBornAgainByRegion
-ggplot(born_again_and_millennials, aes(x=born_again_and_millennials$Var.1, y=born_again_and_millennials$value, fill=born_again_and_millennials$Var.2))+
+ggplot(born_again_and_millennials, aes(x=born_again_and_millennials$Var1, y=born_again_and_millennials$value, fill=born_again_and_millennials$Var2))+
   geom_bar(stat="identity", position="dodge")+
   ylab("Percentage")+xlab("Born Again?")+
   ggtitle("Millennial Identification as 'Born Again'")+
@@ -234,13 +234,13 @@ ggplot(BornAgainDF, aes(x=MILLENNIALS, y=Freq, fill=REBORN ))+
 ## @knitr TimeSeries
 #Time Series - 4yr chart (2008-12)
 time_melt<-melt(prop.table(table(as.factor(Nreligid_region$YEAR),Nreligid_region$REBORNFAC)), id.vars=YEAR)
-ggplot(time_melt, aes(x=Var.1, y=value, color=Var.2))+geom_line()+xlab("Year")+ylab("Percentage")+
+ggplot(time_melt, aes(x=Var1, y=value, color=Var2))+geom_line()+xlab("Year")+ylab("Percentage")+
   scale_y_continuous( labels=percent_format())+
   scale_color_discrete(name="Born Again")+
   ggtitle("Percentage of All Born Again Over Time (2008-12")
 
 #Time Series - 12 yr chart (2000-12)
-#load 2000-2012 religion data
+#load 2000-2012 religion data, this requires gss database of 2000-2012
 # Create data if necessary - This should be run only on large ram comp.
 #gss2000_12<-religionModify(subset(gss1990, year>1999))
 names(gss2000_2012)<-toupper(names(gss2000_2012))
@@ -263,11 +263,11 @@ millennials_subset<-subset(Nreligid_region, Nreligid_region$MILLENNIALS=="Millen
 Reborn_prop<-table(as.factor(millennials_subset$YEAR), 
                  millennials_subset$REBORNFAC, 
                  millennials_subset$NEWREGIONID)
-prop.table(Reborn_prop,1)*100
+#prop.table(Reborn_prop,1)*100
 Mills_reborn_prop<-prop.table(ftable(
   xtabs(~millennials_subset$NEWREGIONID+millennials_subset$YEAR+
           millennials_subset$REBORNFAC)),1)*100
-Mills_reborn_prop
+#Mills_reborn_prop
 time_melt<-melt(Mills_reborn_prop, id.vars=YEAR)
 ggplot(time_melt, aes(x=value.millennials_subset.YEAR, y=value.Freq, group=value.millennials_subset.REBORNFAC, color=value.millennials_subset.REBORNFAC))+
   geom_line()+
@@ -280,11 +280,11 @@ millennials_subset<-subset(gss2000_12, MILLENNIALS=="Millennials")
 Reborn_prop<-table(as.factor(millennials_subset$YEAR), 
                    millennials_subset$REBORN, 
                    millennials_subset$NEWREGIONID)
-prop.table(Reborn_prop,1)*100
+#prop.table(Reborn_prop,1)*100
 Mills_reborn_prop<-prop.table(ftable(
   xtabs(~millennials_subset$NEWREGIONID+millennials_subset$YEAR+
           millennials_subset$REBORN)),1)*100
-Mills_reborn_prop
+#Mills_reborn_prop
 time_melt<-melt(Mills_reborn_prop, id.vars=YEAR)
 ggplot(time_melt, aes(x=value.millennials_subset.YEAR, y=value.Freq, group=value.millennials_subset.REBORN, color=value.millennials_subset.REBORN))+
   geom_line()+
@@ -308,7 +308,7 @@ ggplot(BornAgainSouthDF, aes(x=MILLENNIALS,y=Freq, fill=REBORN))+
 #  geom_bar(aes(y = (..count..)/sum(..count..))) + 
 #  scale_y_continuous(formatter = 'percent')
 
-## @kintr SetupMillennialReligiousIDbyregion'
+## @knitr SetupMillennialReligiousIDbyregion
 #Create Tables for Graph - Millennials religious identificaiton by region
 millennials_table_by_revised_region <- round((prop.table(table(gss_millennials$RELIG, gss_millennials$NEWREGIONID),2)*100),3)
 #ftable(millennials_table_by_revised_region)
@@ -364,15 +364,15 @@ colnames(nones_compare)<-c("Millennials Midwest","All Midwest", "Millennials Nor
 
 #create a table ggplot of millennials nones v. all nones
 #library(reshape)
-millennials_summary_by_region<-subset(melt(millennials_table_by_revised_region), Var.1=="NONE" & Var.2 !="Not Assigned")
+millennials_summary_by_region<-subset(melt(millennials_table_by_revised_region), Var1=="NONE" & Var2 !="Not Assigned")
 millennials_summary_by_region$MILLENNIALS <- factor(TRUE)
-nonmillennials_summary_by_region<-subset(melt(percentage_table_by_revised_region), Var.1=="NONE" & Var.2 !="Not Assigned")
+nonmillennials_summary_by_region<-subset(melt(percentage_table_by_revised_region), Var1=="NONE" & Var2 !="Not Assigned")
 nonmillennials_summary_by_region$MILLENNIALS <- factor(FALSE)
 all_summary_by_region<-merge(millennials_summary_by_region, nonmillennials_summary_by_region, all=TRUE)
 levels(all_summary_by_region$MILLENNIALS)<-c("Millennials","Non-Millennials")
 #comparison table using ggplot
 #library(ggplot2)
-ggplot(all_summary_by_region, aes(x=Var.2, y=value, fill=MILLENNIALS)) + 
+ggplot(all_summary_by_region, aes(x=Var2, y=value, fill=MILLENNIALS)) + 
   geom_bar(stat="identity", position="dodge")+ylab("Perecentage")+xlab("Region")+
   ggtitle("Millennial v. Non-Millennial Nones by Region")+
   scale_fill_discrete(name="Religiously Unaffiliated (Nones)", 
