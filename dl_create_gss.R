@@ -154,10 +154,11 @@ names(gss2008_cur[,4588:4675])
 
 gss2008_cur.religionA<-gss2008_cur[c("year","region","age","reborn", "attend","attend12","cohort")]
 gss2008_cur.religionB<-gss2008_cur[relnames]
-gss2008_cur.religionC<-gss2008_cur[4588:4675]
+gss2008_cur.religionC<-gss2008_cur[319:413]
 gss2008_cur.relcombine<-data.frame(gss2008_cur.religionA,gss2008_cur.religionB, gss2008_cur.religionC)
 #convert all names to uppercase
 names(gss2008_cur.relcombine)<-toupper(names(gss2008_cur.relcombine))
 head(gss2008_cur.relcombine)
 nrow(gss2008_cur.relcombine)
 save( gss2008_cur.relcombine , file = "gss2008_cur.rda" )
+

@@ -57,10 +57,10 @@ library("plyr")
 library("circlize")
 #copy gss 2008-2012 data
 #run dl_create_gss.R first to create data file (NOTE: heavy system requirements, please read the comments in file)
-# dl_create_gss.R creates gss2008_12.rda
-# gss2008_12.rda is loaded into gss2012
-load("gss2008_12.rda")
-gss2012<-gss2008_12.relcombine
+# dl_create_gss.R creates gss2008_cur.rda
+# gss2008_cur.rda is loaded into gss2012
+load("gss2008_cur.rda")
+gss2012<-gss2008_cur.relcombine
 #upcase names
 names(gss2012)<-toupper(names(gss2012))
 rm("gss2008_12.relcombine")
