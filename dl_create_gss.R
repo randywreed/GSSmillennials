@@ -20,141 +20,69 @@
 # #
 #######################################################################
 #update.packages(checkBuilt=TRUE)
-install.packages("downloader", dependencies=TRUE)
+#install.packages("downloader", dependencies=TRUE)
 install.packages("memisc", dependencies=TRUE)
 install.packages("devtools", dependencies=TRUE)
 install.packages("Hmisc", dependencies=TRUE)
 install.packages("foreign", dependencies=TRUE)
+install.packages("RCurl")
+install.packages("httr")
+
 library("downloader")
 library("memisc")
 library("Hmisc")
 library("foreign")
 library(devtools)
-install_github("ROAuth", "duncantl")
+library("RCurl")
+library("httr")
+install_github("duncantl/ROAuth")
 require(devtools)
-install_github("rDrop", "karthikram")
-
+install.packages("rdrop2")
+install.packages("httpuv")
+library("httpuv")
 # you should run these manually, replacing as appropriate
 #options(DropboxKey = "Your_App_key")
 #options(DropboxSecret = "Your_App_Secret")
 
 
 # #dropbox app intialization
-# library(rDrop)
-# # If you have Dropbox keys in your .rprofile, simply run:
-# dropbox_credentials <- dropbox_auth()
-# # Otherwise:
-# #dropbox_credentials <- dropbox_auth("Your_consumer_key", "Your_consumer_secret")
-# save(dropbox_credentials, file="my_dropbox_credentials.rdata")
+ library(rdrop2)
+#can't generate the token from rstudio server. In rstudio standalone do the following
+# install.packages("rdrop2")
+#token<- drop_auth()
+#saveRDS(token, "droptoken.rds")
+# then upload droptoken.rds to current directory
+token<-readRDS("droptoken.rds")
+drop_get("ICPSR_36319.zip", dtoken = token)
+unzip("ICPSR_36319.zip")
+load("./ICPSR_36319/DS0001/36319-0001-Data.rda")
+#rename the rda file df to GSS.current.df
+GSS.current.df <- da36319.0001
 # 
-# # set your working directory.
-# # all GSS data files will be stored here
-# # after downloading and importing.
-# # use forward slashes instead of back slashes
-# 
-# # uncomment this line by removing the `#` at the front..
-# # setwd( "C:/My Directory/GSS/" )
-# # ..in order to set your current working directory
-# 
-# # to download portable spss file set dl_flag="por"
-# # to download spss sav file set dl_flag="sav"
-# dl_flag="sav"
-# 
-# # set the number of digits shown in all output
-# 
-# options( digits = 8 )
-# 
-# ###############################################
-# # DATA LOADING COMPONENT - ONLY RUN THIS ONCE #
-# ###############################################
-# 
-# 
-# # create a temporary file and a temporary directory
-# # for downloading file to the local drive
-# tf <- tempfile() ; td <- tempdir()
-# 
-# # create new character variables containing the full filepath of the file on norc's website
-# # that needs to be downloaded and imported into r for analysis
-# if (dl_flag=="por") {
-#   GSS.2012.CS.file.location <- download_link
-# } else
-#   GSS.2012.CS.file.location <- download_link2
-#   
-# # download the file using the filepath specified
-# download.file( 
-#   # download the file stored in the location designated above
-#   GSS.2012.CS.file.location ,
-#   # save the file as the temporary file assigned above
-#   tf , 
-#   # download this as a binary file type
-#   mode = "wb"
-# )
-# 
-# 
-# # the variable 'tf' now contains the full file path on the local computer to the specified file
-# 
-# # store the file path on the local disk to the extracted file (previously inside the zipped file)
-# # inside a new character string object 'fn'
-# #this does not have to be run for the .sav
-# if (dl_flag=="por") {
-# fn <- 
-#   unzip( 
-#     # unzip the contents of the temporary file
-#     tf , 
-#     # ..into the the temporary directory (also assigned above)
-#     exdir = td , 
-#     # overwrite the contents of the temporary directory
-#     # in case there's anything already in there
-#     overwrite = T
-#   )
-# # print the temporary location of the stata (.dta) file to the screen
-# print( fn[1] )
-# } 
-#   
-#   #get file from dropbox
-# #  tf<-dropbox_get(dropbox_credentials, 'gss1972-2012.sav', binary=TRUE)
-# # save(tf, file="gss1972-2012.sav", ascii=FALSE)
-# #  fn<-"gss1972-2012.sav"
 #
-# Change the following line to the current gss.sav file
-fn<-"GSS7214_R6b.sav"
-# 
-# 
-# 
-# 
-# 
-# # these two steps take a while.  but once saved as a .rda, future loading becomes fast forever after #
-# 
-# 
-# # convert the stata (.dta) file saved on the local disk (at 'fn') into an r data frame
-# if (dl_flag=="por"){
-# GSS.2012.CS.df <- as.data.set(spss.portable.file( fn[1] )) 
-# } else
-GSS.current.df <- spss.get(fn, use.value.labels=TRUE)
+###############################################################
+# Isolate Religious Fields
+# This section of code helps you determine what fields are related to religion
+# The best approach is to search the code book manually and then use a variant of:
+# which(names(gss2008_cur)=="PREMARS1") to get the index number
+# misc_rel holds all the groups of religion in 1972-2014
+# It should be redone with each issuance. The numbers will Not stay the same
+#
+unique(GSS.current.df$YEAR) # check to make sure what years we have
+# isolate years from 2008 on
+gss2008_cur<-subset(GSS.current.df, YEAR > 2007)
 
-# save the cross-sectional cumulative gss r data frame inside an r data file (.rda)
-save( GSS.current.df , file = "GSS.current.rda" )
-
-# note that this .rda file will be stored in the local directory specified
-# with the setwd command at the beginning of the script
-
-
-
-
-unique(GSS.current.df$year)
-
-#unique(gss2010_12$year)
-gss2008_cur<-subset(GSS.current.df, year > 2007)
-#gss2008_cur<-GSS.2012.CS.df
 names(gss2008_cur)
-relnames<-grep("reli",names(gss2008_cur))
+relnames<-grep("RELI",names(gss2008_cur))
 names(gss2008_cur[relnames])
-names(gss2008_cur[grep("premars",names(gss2008_cur))])
-names(gss2008_cur[,4588:4675])
+names(gss2008_cur[grep("PREMARS",names(gss2008_cur))])
+which(names(gss2008_cur)=="PREMARS1")
+misc_rel<-c(319:413, 1059:1063, 2100:2123, 3071:3106, 3323, 3834:3852, 4640:4726)
+names(gss2008_cur[misc_rel])
 
-gss2008_cur.religionA<-gss2008_cur[c("year","region","age","reborn", "attend","attend12","cohort")]
+gss2008_cur.religionA<-gss2008_cur[toupper(c("year","region","age","reborn", "attend","attend12","cohort"))]
 gss2008_cur.religionB<-gss2008_cur[relnames]
-gss2008_cur.religionC<-gss2008_cur[319:413]
+gss2008_cur.religionC<-gss2008_cur[misc_rel]
 gss2008_cur.relcombine<-data.frame(gss2008_cur.religionA,gss2008_cur.religionB, gss2008_cur.religionC)
 #convert all names to uppercase
 names(gss2008_cur.relcombine)<-toupper(names(gss2008_cur.relcombine))
