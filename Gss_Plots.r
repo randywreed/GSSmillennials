@@ -63,7 +63,7 @@ load("gss2008_cur.rda")
 gss2012<-gss2008_cur.relcombine
 #upcase names
 names(gss2012)<-toupper(names(gss2012))
-rm("gss2008_12.relcombine")
+if (exists("gss2008_cur.relcombine")) rm("gss2008_cur.relcombine")
 
 #Create religid_region
 Nreligid_region<-gss2012[,c("YEAR","RELIG","REGION")]
@@ -103,13 +103,27 @@ gss_millenials_so<-subset(gss_millennials, gss_millennials$NEWREGIONID=="South")
 
 ## @knitr EvangelicalPresence
 #Evangelical presence in the country
-ggplot(subset(Nreligid_region, REBORN %in% c("YES","NO")), aes(x=REBORN, fill=REBORN))+
+Nreligid_region %>% na.omit() %>% filter(YEAR==2014)  %>%
+ggplot(aes(x=REBORN, fill=REBORN))+
   xlab("Born Again Experience?")+
   ylab("Percentage")+ggtitle("National percentage of individuals who have had a 'Born Again' Experience")+
   geom_bar(aes(y=(..count..)/sum(..count..)), position="dodge")+
   theme(legend.position="none")+
   scale_y_continuous(labels=percent)+
-  annotate("text",label="General Social Survey 2008-2012", x=1.5, y=.01, size=3, color="black")
+  annotate("text", label="General Social Survey 2014", x=1.5, y=.01, size=3, color="black")
+
+## @knitr EvangelicalStacked
+Nreligid_region$RELIG<-factor(Nreligid_region$RELIG, levels=rev(levels(Nreligid_region$RELIG)))
+Nreligid_region %>% na.omit() %>% filter(YEAR==2014)  %>%
+  ggplot(aes(x=REBORN, fill=RELIG))+
+  xlab("Born Again Experience?")+
+  ylab("Percentage")+ggtitle("National percentage of individuals who have had a 'Born Again' Experience")+
+  geom_bar(aes(y=(..count..)/sum(..count..)))+
+  scale_fill_grey(start = 0.8, end= 0.2)+ theme_classic()+
+  #theme(legend.position="none")+
+  scale_y_continuous(labels=percent)+
+  annotate("text", label="General Social Survey 2014", x=1.5, y=.01, size=3, color="black")
+
   
 ## @knitr EvangelicalByRegion
 #Evangelical presence in the country by region

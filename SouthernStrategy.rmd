@@ -30,10 +30,10 @@ The Emerging Church is one of the most interesting movements in Western Christia
 ```{r echo=FALSE, results='hide', warning=FALSE, message=FALSE}
 library(ggplot2)
 <<setup>>
-<<EvangelicalCount>>
+<<EvangelicalStacked>>
 ```
 
-  Beginning with the question regarding the presence of Evangelicals in both millennial and non-millennial populations. The General Social Survey puts the national percentage of Evangelicals at 40% which is slightly higher than Pew (and probably overstated) but will act as a baseline for comparison. Here we can see among the general population non-evangelicals outnumber Evangelicals.  
+  Beginning with the question regarding the presence of Evangelicals in both millennial and non-millennial populations. The General Social Survey for 2014 puts the national percentage of Evangelicals at 40% but Evangelical Protestant consist of 27% which is slightly higher than Pew (and probably overstated) but will act as a baseline for comparison.^[The GSS includes two things here that probably creates a higher number than Pew. First, the question asks whether the respondent has ever had a born again experience. Individuals who grew up in Evangelical homes, but are not currently Evangelicals would probably answer "Yes" to this. To that end 1 in 7 "Nones" answer "Yes" though it seems unlikely the number is really that high. Second, the GSS includes not just Protestant Evangelicals but also Catholics and (the aforemention) Nones. Protestants who have had a ] Here we can see among the general population non-evangelicals outnumber Evangelicals.  
   
 ```{r echo=FALSE, results='hide', warning=FALSE, message=FALSE}  
 <<EvangelicalByRegionCompareYN>>
