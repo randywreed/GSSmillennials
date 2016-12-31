@@ -13,7 +13,7 @@ knitr::opts_chunk$set(echo = FALSE)
 
 ``` {r echo=FALSE}
 library("knitr")
-read_chunk('Gss_Plots (1).R')
+read_chunk('Gss_Plots.r')
 ````
 ## Introduction  
 The Emerging Church is one of the most interesting movements in Western Christianity today. A movement that sees itself as specifically attuned to the postmodern world, the Emerging Church has staked out positions that are pro-gay, socially and economically progressive, and religiously inclusive. This might seem a movement tailor made for millennials who generally hold these same values. Studies that have looked at the Emerging Church have often commented on the progressive nature of the movement. ^[Scot McKnight et al., Church in the Present Tense (ēmersion: Emergent Village Resources for Communities of Faith): A Candid Look at What’s Emerging, Pap/DVD edition (Brazos Press, 2011). Tony Jones, The Church Is Flat: The Relational Ecclesiology of the Emerging Church Movement (Minneapolis, MN: JoPa Group, 2011).] However, none of these studies have focused on millennials or have been centered in the South. This deficiency I hope to begin to correct in this paper. 
@@ -68,6 +68,7 @@ library(ggplot2)
 
 ```{r echo=FALSE, results='hide', warning=FALSE, message=FALSE}  
   <<SetupMillennialReligiousIDbyregion>>
+  <<AllReligiousIDbyRegionSetup>>
   <<comparisontable>>
 ````
 

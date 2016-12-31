@@ -324,6 +324,9 @@ ggplot(BornAgainSouthDF, aes(x=MILLENNIALS,y=Freq, fill=REBORN))+
 
 ## @knitr SetupMillennialReligiousIDbyregion
 #Create Tables for Graph - Millennials religious identificaiton by region
+#tbl_millen<-table(gss_millennials$RELIG, gss_millennials$NEWREGIONID)
+#ptbl_millen<-prop.table(tbl_millen,2)
+#millennials_table_by_revised_region<-round(ptbl_millen*100, 3)
 millennials_table_by_revised_region <- round((prop.table(table(gss_millennials$RELIG, gss_millennials$NEWREGIONID),2)*100),3)
 #ftable(millennials_table_by_revised_region)
 #colSums(millennials_table_by_revised_region)
@@ -378,9 +381,9 @@ colnames(nones_compare)<-c("Millennials Midwest","All Midwest", "Millennials Nor
 
 #create a table ggplot of millennials nones v. all nones
 #library(reshape)
-millennials_summary_by_region<-subset(melt(millennials_table_by_revised_region), Var1=="NONE" & Var2 !="Not Assigned")
+millennials_summary_by_region<-subset(melt(millennials_table_by_revised_region), Var1=="(04) NONE" & Var2 !="Not Assigned")
 millennials_summary_by_region$MILLENNIALS <- factor(TRUE)
-nonmillennials_summary_by_region<-subset(melt(percentage_table_by_revised_region), Var1=="NONE" & Var2 !="Not Assigned")
+nonmillennials_summary_by_region<-subset(melt(percentage_table_by_revised_region), Var1=="(04) NONE" & Var2 !="Not Assigned")
 nonmillennials_summary_by_region$MILLENNIALS <- factor(FALSE)
 all_summary_by_region<-merge(millennials_summary_by_region, nonmillennials_summary_by_region, all=TRUE)
 levels(all_summary_by_region$MILLENNIALS)<-c("Millennials","Non-Millennials")
@@ -406,15 +409,15 @@ ggplot(Born_again_subset_wide_select, aes(x=Var.2, y=value, fill=Var.1)) + geom_
 require(plyr)
 results <- ddply(.data = Nreligid_region, .var = c("NEWREGIONID", "MILLENNIALS"), .fun = function(x) {
   data.frame(n = nrow(x),
-             protestant.n = nrow(subset(x, RELIG == "PROTESTANT")),
+             protestant.n = nrow(subset(x, RELIG == "(01) PROTESTANT")),
              protestant.prop = (nrow(subset(x, RELIG ==
-                                              "PROTESTANT")) / nrow(x))*100,
-             none.n = nrow(subset(x, RELIG == "NONE")),
+                                              "(01) PROTESTANT")) / nrow(x))*100,
+             none.n = nrow(subset(x, RELIG == "(04) NONE")),
              none.prop = (nrow(subset(x, RELIG ==
-                                              "NONE")) / nrow(x))*100,
-             catholic.n = nrow(subset(x, RELIG == "CATHOLIC")),
+                                              "(04) NONE")) / nrow(x))*100,
+             catholic.n = nrow(subset(x, RELIG == "(02) CATHOLIC")),
              catholic.prop = (nrow(subset(x, RELIG ==
-                                              "CATHOLIC")) / nrow(x))*100
+                                              "(02) CATHOLIC")) / nrow(x))*100
   )
 }
 )
@@ -452,15 +455,15 @@ ggplot(millennials.results.prop, aes(x=NEWREGIONID, y=value, fill=variable))+
 # Both a proportion and actual numbers
 results16 <- ddply(.data = Nreligid_region, .var = c("NEWREGIONID", "RELIG16", "MILLENNIALS"), .fun = function(x) {
   data.frame(n = nrow(x),
-             protestant.n = nrow(subset(x, RELIG == "PROTESTANT")),
+             protestant.n = nrow(subset(x, RELIG == "(01) PROTESTANT")),
              protestant.prop = (nrow(subset(x, RELIG ==
-                                              "PROTESTANT")) / nrow(x))*100,
-             none.n = nrow(subset(x, RELIG == "NONE")),
+                                              "(01) PROTESTANT")) / nrow(x))*100,
+             none.n = nrow(subset(x, RELIG == "(04) NONE")),
              none.prop = (nrow(subset(x, RELIG ==
-                                        "NONE")) / nrow(x))*100,
-             catholic.n = nrow(subset(x, RELIG == "CATHOLIC")),
+                                        "(04) NONE")) / nrow(x))*100,
+             catholic.n = nrow(subset(x, RELIG == " (02) CATHOLIC")),
              catholic.prop = (nrow(subset(x, RELIG ==
-                                            "CATHOLIC")) / nrow(x))*100
+                                            "(02) CATHOLIC")) / nrow(x))*100
   )
 }
 )
@@ -481,7 +484,7 @@ convmil<-ggplot(relchange.melt, aes(x=RELIG16,y=value, fill=variable))+geom_bar(
   xlab("Original Religious Affilliation (South)")+ylab("Percentage")
 #convmil
  convmil+ scale_fill_discrete(name="Current Affilliation",
-                      breaks=c("PROTESTANT", "CATHOLIC", "NONE"),
+                      breaks=c("(01) PROTESTANT", "(02) CATHOLIC", "(04) NONE"),
                       labels=c("Protestant", "Catholicism", "None"))+
   ggtitle("Change/Conversion of Southern Millennials")
 
