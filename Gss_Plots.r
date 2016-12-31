@@ -136,12 +136,14 @@ ggplot(subset(Nreligid_region, REBORN %in% c("YES","NO")), aes(x=REBORN, fill=NE
 
 ## @knitr EvangelicalByRegionCompareYN
 #Regional Comparison of Born Again
-ggplot(na.omit(subset(Nreligid_region, REBORN %in% c("YES","NO"))), aes(x=NEWREGIONID, fill=REBORN))+xlab("Born Again?")+
+ggplot(na.omit(Nreligid_region, REBORN), 
+       aes(x=NEWREGIONID, fill=REBORN))+
+  xlab("Born Again?")+
   ylab("Percentage")+ggtitle("Percentage of Evangelicals in Each Region")+
   geom_bar(aes(y=(..count..)/sum(..count..)), position="dodge")+
   scale_fill_discrete(name="Been Born Again?")+
   scale_y_continuous(labels=percent)+
-  labs(caption="General Social Survey 2008-2012 v2")
+  labs(caption="General Social Survey 2008-2014")
 
     
 ## @knitr MillennialsBornAgainSetup
@@ -243,7 +245,10 @@ ggplot(BornAgainDF, aes(x=MILLENNIALS, y=Freq, fill=REBORN ))+
   geom_bar( stat="identity", position="dodge")+
   facet_wrap(~NEWREGIONID, ncol=2)+
   ylab("Percentage")+xlab("Non-Millennials v. Millennials")+
-  scale_fill_discrete(name="Born Again?")
+  ggtitle("Millennials v. Non-Millennials Born Again")+
+  scale_fill_grey(name="Born Again?", start=0, end=.5)+
+  labs(caption="General Social Survey 2008-2014")
+
 
 ## @knitr TimeSeries
 #Time Series - 4yr chart (2008-12)
