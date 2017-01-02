@@ -31,6 +31,7 @@ install.packages("Lahman")
 install.packages("knitr")
 install.packages("tidyr")
 install.packages("circlize")
+install.packages("pander")
 #these may not be necessary and errored anyway
 #devtools::install_github( "romainfrancois/Rcpp11" )
 #require( Rcpp11 )
@@ -38,6 +39,7 @@ install.packages("circlize")
 
 devtools::install_github("hadley/dplyr")
 devtools::install_github("randywreed/gssReligion", auth_token = Sys.getenv("GITHUB_PAT"))
+devtools::install_github("mattflor/chorddiag", build_vignettes = TRUE)
 
 ## @knitr setup
 library("Hmisc")
@@ -55,6 +57,8 @@ library("knitr")
 library("tidyr")
 library("plyr")
 library("circlize")
+
+
 #copy gss 2008-2012 data
 #run dl_create_gss.R first to create data file (NOTE: heavy system requirements, please read the comments in file)
 # dl_create_gss.R creates gss2008_cur.rda
@@ -582,13 +586,23 @@ chordRelchange<-relchange.all.melt %>%
   select(RELIG16.lab, variable.lab, value)
 chordRelchange$RELIG16.lab=str_wrap(chordRelchange$RELIG16.lab, width=6)
 chordRelchange$variable.lab<-sub("^", "to ", chordRelchange$variable.lab)
-par(mar=c(0,0,0,0))
-par(oma=c(0,0,0,0))
+#circos.initialize()
+#circos.clear()
+par(mar=c(1,1,1,1))
+par(oma=c(2,2,2,2))
+par(pty="s")
 #circos.axis(labels.cex=par(3))
-circos.clear()
+#circos.clear()
+#circos.par(track.margin=c(0,0), start.degree=0)
 col_fun=colorRamp2(range(chordRelchange$value), c("#333333", "#888888"))
 grid.col="grey"
-chordDiagram(chordRelchange, directional=1, grid.col="grey", col=col_fun)
+chordDiagram(chordRelchange, directional=TRUE, grid.col="grey", col=col_fun, annotationTrack = c("name","grid"),
+             annotationTrackHeight = c(0.03, 0.01))
+circos.clear()
+# chordRelChgMat<-as.matrix(chordRelchange)
+# chordRelMat<-as.matrix(dcast(chordRelchange, RELIG16.lab~variable.lab, value=value))
+# chorddiag(chordRelChgMat, type="bipartite")
+
 
 ## @knitr ConvMillennialsRegionCount
 #stacked bar plot all regions exclude original identity count

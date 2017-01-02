@@ -4,6 +4,9 @@ Subtitle: "Receptivity of Southern Millennials to the Emerging Church"
 author: "Randall Reed, Ph.D"
 output: 
   odt_document:
+    fig_width: 5
+    fig_height: 5
+    fig_caption: true
     reference_odt: SouthernStrategy_style.odt
 ---
 
@@ -14,6 +17,7 @@ knitr::opts_chunk$set(echo = FALSE)
 ``` {r echo=FALSE}
 library("knitr")
 read_chunk('Gss_Plots.r')
+opts_knit$set(global.par=TRUE)
 ````
 ## Introduction  
 The Emerging Church is one of the most interesting movements in Western Christianity today. A movement that sees itself as specifically attuned to the postmodern world, the Emerging Church has staked out positions that are pro-gay, socially and economically progressive, and religiously inclusive. This might seem a movement tailor made for millennials who generally hold these same values. Studies that have looked at the Emerging Church have often commented on the progressive nature of the movement. ^[Scot McKnight et al., Church in the Present Tense (ēmersion: Emergent Village Resources for Communities of Faith): A Candid Look at What’s Emerging, Pap/DVD edition (Brazos Press, 2011). Tony Jones, The Church Is Flat: The Relational Ecclesiology of the Emerging Church Movement (Minneapolis, MN: JoPa Group, 2011).] However, none of these studies have focused on millennials or have been centered in the South. This deficiency I hope to begin to correct in this paper. 
@@ -80,11 +84,19 @@ library(ggplot2)
 
   However, one should not be left with the impression that the trade between, say, protestants and nones is even, both swapping 20%.  Thus it is helpful to look at actual numbers, and when we do that we see that trade is significantly disproportionate whereby the Protestant and Catholics are giving up significantly more people to the nones than vice-versa. So the growth of the None’s is neither insubstantial nor regionally specific. It spans the nation, with some regional variation, but it is present in all regions.  
   
- ```{r echo=FALSE, results='hide', warning=FALSE, message=FALSE}  
-  <<ConversionRatesSetup>>
-  <<RelChangeRegionsSetup>>
-  <<ConverMillennialsRegionChord>>
-````   
+<!--  ```{r echo=FALSE, results='hide', warning=FALSE, message=FALSE} -->
+<!--    <<ConversionRatesSetup>> -->
+<!--   <<RelChangeRegionsSetup>> -->
+<!--  par(mar=c(5,0,0,0)) -->
+<!--   <<ConverMillennialsRegionChord>> -->
+<!-- ````    -->
+
+ ```{r echo=FALSE, results='hide', warning=FALSE, message=FALSE, fig.width=1, fig.height=10} 
+ library(png)
+ library(grid)
+ img<-readPNG("chordPlotbw.png")
+ grid.raster(img)
+````
 
   This graph show through the size of the ribbons between each region/affiliation combination the size of the population making the move. What can be seen is that the largest ribbons are from one region/affilation to the same affilation. For instance Southern "Nones" largely stay southern nones. The same is true for southern protestants. But what is also clear is that a larger band of southern protestants ends up as nones than southern nones as protestants. But neither band is nearly as large as the retention band. The band of protestants becoming nones however changes based on region, with the western and northern bands of protestants becoming nones larger than the southern and midwestern bands.
   But to turn from national trends but to focus on a particular region -- the South, two conclusions can be summarized that are of relevance: First, fewer millennials in the south are identifying with evangelicalism by claiming a born again experience. Second, Protestant millennials in the south are shedding their protestant identification in significant numbers.  
