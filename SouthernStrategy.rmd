@@ -58,7 +58,6 @@ library(ggplot2)
   This leads us to the question of the religious “nones.” There has been much made of the advent of the “nones” and some criticism about the category as well. As a category it is neither all meaningful nor meaningless as different people have alternatively exalted or decried. It is ultimately a variable and as a variable it can tell us whether more or less people are rejecting institutional religious labels, but it cannot tell us why or what it is that these “nones” actually believe. These questions are left to other variables,  more focused surveys and most importantly qualitative work still to be done. Nevertheless it is worth exploring the religious identification variable for what it can tell us.  
 
 ```{r echo=FALSE, results='hide', warning=FALSE, message=FALSE}  
-  <<AllReligiousIDbyRegionSetup>>
   <<AllReligiousIDbyRegionPlot>>
 ````
 
@@ -68,8 +67,6 @@ library(ggplot2)
  If we go a little further and compare millennial nones to non-millennial nones what we see is the millennial nones significantly outpace non-millennial nones in every region. Millennial nones are a distinctive reality. Again we may not be able to say what this means, but it is certainly a phenomenon that requires further study.  
 
 ```{r echo=FALSE, results='hide', warning=FALSE, message=FALSE}  
-  <<SetupMillennialReligiousIDbyregion>>
-  <<AllReligiousIDbyRegionSetup>>
   <<comparisontable>>
 ````
 
@@ -81,7 +78,7 @@ library(ggplot2)
   <<ConverMillennialsRegionStacked>>
 ```` 
 
-  However, I do not want to give the impression that the trade between, say, protestants and nones is even, both swapping 20% so it comes out a wash.  Thus it is helpful to look at actual numbers, and when we do that we see that trade is significantly disproportionate whereby the Protestant and Catholics are giving up significantly more people to the nones than vice-versa. So the growth of the None’s is neither insubstantial nor regionally specific. It spans the nation, with some regional variation, but it is present in all regions.  
+  However, one should not be left with the impression that the trade between, say, protestants and nones is even, both swapping 20%.  Thus it is helpful to look at actual numbers, and when we do that we see that trade is significantly disproportionate whereby the Protestant and Catholics are giving up significantly more people to the nones than vice-versa. So the growth of the None’s is neither insubstantial nor regionally specific. It spans the nation, with some regional variation, but it is present in all regions.  
   
  ```{r echo=FALSE, results='hide', warning=FALSE, message=FALSE}  
   <<ConversionRatesSetup>>
@@ -89,6 +86,7 @@ library(ggplot2)
   <<ConverMillennialsRegionChord>>
 ````   
 
+  This graph show through the size of the ribbons between each region/affiliation combination the size of the population making the move. What can be seen is that the largest ribbons are from one region/affilation to the same affilation. For instance Southern "Nones" largely stay southern nones. The same is true for southern protestants. But what is also clear is that a larger band of southern protestants ends up as nones than southern nones as protestants. But neither band is nearly as large as the retention band. The band of protestants becoming nones however changes based on region, with the western and northern bands of protestants becoming nones larger than the southern and midwestern bands.
   But to turn from national trends but to focus on a particular region -- the South, two conclusions can be summarized that are of relevance: First, fewer millennials in the south are identifying with evangelicalism by claiming a born again experience. Second, Protestant millennials in the south are shedding their protestant identification in significant numbers.  
   Given the reality then of the millennial defection from institutionalized church, the natural next question is what is driving millennials away from church? This is a question which has occupied David Kinnaman and the Barna Group. Kinnaman has concluded that there are several factors involved: The church is perceived as judgemental, homophobic and too political. Likewise the concerns of the church are not seen as relevant to the lives of millennials. The Public Religion Research Institute has additionally shown that part of the millennial negative perception of the Evangelical church stems from its stance against homosexuality.  
   In to this environment comes the Emerging Church. By all accounts it would seem that the Emerging Church would be ideally suited to appeal to millennials.  Its emphasis on openness, tolerance and focus on discussion over doctrinal purity seems tailor made for the millennials. My own research has focused particularly on this question but with a regional emphasis precisely because of the aforementioned strength of evangelicals in the south: Are southern millennials receptive to the Emerging Church?  Using a series of focus groups of millennials I have posed this and related questions in an attempt to provide some insights unavailable in survey data. The results so far are preliminary, but begin to speak to some of these issues.  

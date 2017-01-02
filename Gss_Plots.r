@@ -64,7 +64,6 @@ gss2012<-gss2008_cur.relcombine
 #upcase names
 names(gss2012)<-toupper(names(gss2012))
 if (exists("gss2008_cur.relcombine")) rm("gss2008_cur.relcombine")
-
 #Create religid_region
 Nreligid_region<-gss2012[,c("YEAR","RELIG","REGION")]
 #Nreligid_region$RELIG<- factor(gss2012$RELIG, labels=c("Protestant","Catholic","Jewish","None","Other (specify)","Buddhism","Hinduism","Other Eastern Religion","Muslim/Islam","Orthodox Christian","Christian","Native American","Inter-/non-denominational"))
@@ -91,15 +90,39 @@ attendlookup<-data.frame(attendid=c(1:10), attendnum=c(0,.5,1,6,12,30,46,52,100,
 Nreligid_region$NEWATTENDID<-as.numeric(Nreligid_region$ATTEND)
 Nreligid_region$NEWATTEND<- attendlookup$attendnum[match(Nreligid_region$NEWATTENDID,attendlookup$attendid)]
 Nreligid_region$NEWATTEND<-factor(Nreligid_region$NEWATTEND,labels=c("Never","LT Yearly","Yearly","Several Times a Year","Monthly","2-3x a Month","Nearly Weekly","Weekly","More Than Weekly"))
-
-#head(Nreligid_region, 20)
-#head(Nreligid_region[8:10],20)
-
 #Create Subsets
 #Millennials only Subset
 gss_millennials<-subset(Nreligid_region, Nreligid_region$MILLENNIALS=="Millennials")
 #Southern Millennials only
 gss_millenials_so<-subset(gss_millennials, gss_millennials$NEWREGIONID=="South")
+
+#percentage of millennials who are born again
+gss_millennials$REBORN<-factor(gss_millennials$REBORN)
+gss_millennials<-na.omit(gss_millennials)
+gss_millennials$REBORN<-factor(gss_millennials$REBORN)
+born_again_and_millennials<-melt(round(prop.table(table(gss_millennials$REBORN, gss_millennials$NEWREGIONID),2)*100,3))
+
+#Create Tables for Graph - Millennials religious identificaiton by region
+millennials_table_by_revised_region <- round((prop.table(table(gss_millennials$RELIG, gss_millennials$NEWREGIONID),2)*100),3)
+millennials_melt<-melt(millennials_table_by_revised_region)
+names(millennials_melt)<-c("ReligiousID", "Region", "Percentage")
+# All Religious Identification by region
+percentage_table_by_revised_region <- round((prop.table(table(Nreligid_region$RELIG, Nreligid_region$NEWREGIONID),2 )*100), 3)
+percentage_table_melt<-melt(percentage_table_by_revised_region)
+names(percentage_table_melt)<-c("ReligiousID","Region","Percentage")
+#comparison table creation
+nones_compare<-cbind(millennials_table_by_revised_region[4,1], percentage_table_by_revised_region[4,1],millennials_table_by_revised_region[4,2], percentage_table_by_revised_region[4,2],millennials_table_by_revised_region[4,3], percentage_table_by_revised_region[4,3],millennials_table_by_revised_region[4,4], percentage_table_by_revised_region[4,4])
+colnames(nones_compare)<-c("Millennials Midwest","All Midwest", "Millennials North","All North","Millennials South","All South","Millennials West","All West" )
+#create a table ggplot of millennials nones v. all nones
+millennials_summary_by_region<-subset(melt(millennials_table_by_revised_region), Var1=="(04) NONE" & Var2 !="Not Assigned")
+millennials_summary_by_region$MILLENNIALS <- factor(TRUE)
+nonmillennials_summary_by_region<-subset(melt(percentage_table_by_revised_region), Var1=="(04) NONE" & Var2 !="Not Assigned")
+nonmillennials_summary_by_region$MILLENNIALS <- factor(FALSE)
+all_summary_by_region<-merge(millennials_summary_by_region, nonmillennials_summary_by_region, all=TRUE)
+levels(all_summary_by_region$MILLENNIALS)<-c("Millennials","Non-Millennials")
+
+
+
 
 ## @knitr EvangelicalPresence
 #Evangelical presence in the country
@@ -147,18 +170,6 @@ ggplot(na.omit(Nreligid_region, REBORN),
   labs(caption="General Social Survey 2008-2014")
 
     
-## @knitr MillennialsBornAgainSetup
-#percentage of millennials who are born again
-gss_millennials$REBORN<-factor(gss_millennials$REBORN)
-#levels(gss_millennials$REBORN)<-c("Yes","No")
-#round((prop.table(table(gss_millennials$RELIG, gss_millennials$NEWREGIONID),2)*100),3)
-#round((prop.table(table(gss_millennials$REBORN, gss_millennials$NEWREGIONID),2)*100),3)
-gss_millennials<-subset(gss_millennials, REBORN %in% c("Yes","No"))
-gss_millennials$REBORN<-factor(gss_millennials$REBORN)
-#ggplot(gss_millennials, aes(x=gss_millennials$REBORN, fill=gss_millennials$NEWREGIONID))+geom_bar(stat="bin", position="dodge")+xlab("Born Again")+ylab("Number of Adherents")+ggtitle("Count of Millennials Are Born Again")+scale_fill_discrete(name="Region")
-born_again_and_millennials<-melt(round(prop.table(table(gss_millennials$REBORN, gss_millennials$NEWREGIONID),2)*100,3))
-#born_again_and_millennials<-subset(born_again_and_millennials_melt, Var.1 %in% c("Yes","No"))
-#born_again_and_millennials <- subset(melt(round((prop.table(table(gss_millennials$REBORN, gss_millennials$NEWREGIONID),2)*100),3)), Var.1 %in% c("Yes","No"))
 
 ## @knitr MillennialBornAgainByRegion
 ggplot(born_again_and_millennials, aes(x=born_again_and_millennials$Var1, y=born_again_and_millennials$value, fill=born_again_and_millennials$Var2))+
@@ -336,17 +347,7 @@ ggplot(BornAgainSouthDF, aes(x=MILLENNIALS,y=Freq, fill=REBORN))+
 #  geom_bar(aes(y = (..count..)/sum(..count..))) + 
 #  scale_y_continuous(formatter = 'percent')
 
-## @knitr SetupMillennialReligiousIDbyregion
-#Create Tables for Graph - Millennials religious identificaiton by region
-#tbl_millen<-table(gss_millennials$RELIG, gss_millennials$NEWREGIONID)
-#ptbl_millen<-prop.table(tbl_millen,2)
-#millennials_table_by_revised_region<-round(ptbl_millen*100, 3)
-millennials_table_by_revised_region <- round((prop.table(table(gss_millennials$RELIG, gss_millennials$NEWREGIONID),2)*100),3)
-#ftable(millennials_table_by_revised_region)
-#colSums(millennials_table_by_revised_region)
-millennials_melt<-melt(millennials_table_by_revised_region)
-names(millennials_melt)<-c("ReligiousID", "Region", "Percentage")
-#different plot for each religion
+
 
 ## @knitr plotReligiousIDbyRegion
 ggplot(subset(millennials_melt, Percentage>10), aes(x=Region, y=Percentage, fill=Region))+
@@ -361,13 +362,6 @@ ggplot(subset(millennials_melt, Percentage>10), aes(x=Region, y=Percentage, fill
  # facet_wrap(~ReligiousID, ncol=1)+
   ggtitle("Millennials Religious Identification By Region")
 
-## @knitr AllReligiousIDbyRegionSetup
-# All Religious Identification by region
-percentage_table_by_revised_region <- round((prop.table(table(Nreligid_region$RELIG, Nreligid_region$NEWREGIONID),2 )*100), 3)
-#percentage_table_by_revised_region
-#colSums(percentage_table_by_revised_region)
-percentage_table_melt<-melt(percentage_table_by_revised_region)
-names(percentage_table_melt)<-c("ReligiousID","Region","Percentage")
 
 ## @knitr AllReligiousIDbyRegionFacet
 #different plot for each religion
@@ -386,30 +380,12 @@ ggplot(subset(percentage_table_melt, Percentage>10), aes(x=Region, y=Percentage,
   labs(caption="General Social Survey 2008-2014")
 
 ## @knitr comparisontable
-#comparison table
-#par(mar=c(5.1,4.1,4.1,2.1))
-nones_compare<-cbind(millennials_table_by_revised_region[4,1], percentage_table_by_revised_region[4,1],millennials_table_by_revised_region[4,2], percentage_table_by_revised_region[4,2],millennials_table_by_revised_region[4,3], percentage_table_by_revised_region[4,3],millennials_table_by_revised_region[4,4], percentage_table_by_revised_region[4,4])
-colnames(nones_compare)<-c("Millennials Midwest","All Midwest", "Millennials North","All North","Millennials South","All South","Millennials West","All West" )
-#compare_nones_chart<-barplot(nones_compare, beside=TRUE, col=c("blue","red"),  axis.lty=1, las=2, main="Millennials Nones v All Nones By Region")
-#text(compare_nones_chart, nones_compare, labels=nones_compare, pos=3, cex=0.75)
-#abline(h=mean(nones_compare))
-
-
-#create a table ggplot of millennials nones v. all nones
-#library(reshape)
-millennials_summary_by_region<-subset(melt(millennials_table_by_revised_region), Var1=="(04) NONE" & Var2 !="Not Assigned")
-millennials_summary_by_region$MILLENNIALS <- factor(TRUE)
-nonmillennials_summary_by_region<-subset(melt(percentage_table_by_revised_region), Var1=="(04) NONE" & Var2 !="Not Assigned")
-nonmillennials_summary_by_region$MILLENNIALS <- factor(FALSE)
-all_summary_by_region<-merge(millennials_summary_by_region, nonmillennials_summary_by_region, all=TRUE)
-levels(all_summary_by_region$MILLENNIALS)<-c("Millennials","Non-Millennials")
-#comparison table using ggplot
-#library(ggplot2)
 ggplot(all_summary_by_region, aes(x=Var2, y=value, fill=MILLENNIALS)) + 
   geom_bar(stat="identity", position="dodge")+ylab("Perecentage")+xlab("Region")+
   ggtitle("Millennial v. Non-Millennial Nones by Region")+
   scale_fill_grey(name="Religiously Unaffiliated (Nones)", 
-                      labels=c("Millennial Nones","Non-Millennial Nones"), start = 0, end=0.5)
+                      labels=c("Millennial Nones","Non-Millennial Nones"), start = 0, end=0.5)+
+  labs(caption="General Social Survey 2008-2014")
 
 ## @knitr BornAgainNones
 # percentage of nones who are born again
@@ -577,11 +553,16 @@ ggplot(relchange.all.melt, aes(x=RELIG16,y=value, fill=variable))+geom_bar(stat=
 ggplot(subset(relchange.all.melt, RELIG16.lab!=toupper(variable.lab)), aes(x=RELIG16,y=value, fill=variable))+
   geom_bar(stat="identity")+
   xlab("Original Religious Affilliation")+ylab("Percentage")+
-  scale_fill_discrete(name="Conversion\nType",
+  scale_fill_grey(name="Conversion\nType",
                       #                    breaks=c("protestant.prop", "catholic.prop", "none.prop"),
-                      labels=c("to Protestant", "to Catholicism", "to None"))+
-  scale_x_discrete(labels=c("Prot","Cath","None"))+
-  ggtitle("Conversion of All Millennials By Region")+facet_grid(.~NEWREGIONID)
+                      labels=c("to Protestant", "to Catholicism", "to None"), start=0, end=0.5)+
+  scale_x_discrete(labels=c("Protestant","Catholic","None"))+
+  theme(axis.text.x = element_text(vjust=grid::unit(c(0, .3, .7), "points")))+
+  facet_grid(.~NEWREGIONID)+
+  theme(axis.title.x = element_text(margin = margin(t=-80)))+
+  ggtitle("Conversion of All Millennials By Region")+
+  labs(caption="General Social Survery 2008-2014")
+  
 
 ## @knitr ConverMillennialsRegionStackedCount
 #stacked bar plot all regions include original identity count
