@@ -597,7 +597,7 @@ par(pty="s")
 col_fun=colorRamp2(range(chordRelchange$value), c("#333333", "#888888"))
 grid.col="grey"
 chordDiagram(chordRelchange, directional=TRUE, grid.col="grey", col=col_fun, annotationTrack = c("name","grid"),
-             annotationTrackHeight = c(0.03, 0.01))
+             annotationTrackHeight = c(0.03, 0.01), preAllocateTracks = list(track.height=0.3))
 circos.clear()
 # chordRelChgMat<-as.matrix(chordRelchange)
 # chordRelMat<-as.matrix(dcast(chordRelchange, RELIG16.lab~variable.lab, value=value))
