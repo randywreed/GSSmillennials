@@ -4,9 +4,6 @@ Subtitle: "Receptivity of Southern Millennials to the Emerging Church"
 author: "Randall Reed, Ph.D"
 output: 
   odt_document:
-    fig_width: 5
-    fig_height: 5
-    fig_caption: true
     reference_odt: SouthernStrategy_style.odt
 ---
 
@@ -82,22 +79,11 @@ library(ggplot2)
   <<ConverMillennialsRegionStacked>>
 ```` 
 
-  However, one should not be left with the impression that the trade between, say, protestants and nones is even, both swapping 20%.  Thus it is helpful to look at actual numbers, and when we do that we see that trade is significantly disproportionate whereby the Protestant and Catholics are giving up significantly more people to the nones than vice-versa. So the growth of the None’s is neither insubstantial nor regionally specific. It spans the nation, with some regional variation, but it is present in all regions.  
-  
-<!--  ```{r echo=FALSE, results='hide', warning=FALSE, message=FALSE} -->
-<!--    <<ConversionRatesSetup>> -->
-<!--   <<RelChangeRegionsSetup>> -->
-<!--  par(mar=c(5,0,0,0)) -->
-<!--   <<ConverMillennialsRegionChord>> -->
-<!-- ````    -->
+  However, one should not be left with the impression that the trade between, say, protestants and nones is even, both swapping 20%.  Thus it is important to recognize that trade is significantly disproportionate. Protestant and Catholics are giving up significantly more people to the nones than vice-versa. So the growth of the None’s is neither insubstantial nor regionally specific. It spans the nation, with some regional variation, but it is present in all regions.  
 
- ```{r echo=FALSE, results='hide', warning=FALSE, message=FALSE, fig.width=1, fig.height=10} 
- library(png)
- library(grid)
- img<-readPNG("chordPlotbw.png")
- grid.raster(img)
-````
-
+```{r, out.width = "600px"}
+knitr::include_graphics("/home/randy/sdb2/r-packages/GSSmillenials/GSSmillennials/chordPlotbw.png")
+```
   This graph show through the size of the ribbons between each region/affiliation combination the size of the population making the move. What can be seen is that the largest ribbons are from one region/affilation to the same affilation. For instance Southern "Nones" largely stay southern nones. The same is true for southern protestants. But what is also clear is that a larger band of southern protestants ends up as nones than southern nones as protestants. But neither band is nearly as large as the retention band. The band of protestants becoming nones however changes based on region, with the western and northern bands of protestants becoming nones larger than the southern and midwestern bands.
   But to turn from national trends but to focus on a particular region -- the South, two conclusions can be summarized that are of relevance: First, fewer millennials in the south are identifying with evangelicalism by claiming a born again experience. Second, Protestant millennials in the south are shedding their protestant identification in significant numbers.  
   Given the reality then of the millennial defection from institutionalized church, the natural next question is what is driving millennials away from church? This is a question which has occupied David Kinnaman and the Barna Group. Kinnaman has concluded that there are several factors involved: The church is perceived as judgemental, homophobic and too political. Likewise the concerns of the church are not seen as relevant to the lives of millennials. The Public Religion Research Institute has additionally shown that part of the millennial negative perception of the Evangelical church stems from its stance against homosexuality.  
