@@ -133,7 +133,7 @@ levels(all_summary_by_region$MILLENNIALS)<-c("Millennials","Non-Millennials")
 Nreligid_region %>% na.omit() %>% filter(YEAR==2014)  %>%
 ggplot(aes(x=REBORN, fill=REBORN))+
   xlab("Born Again Experience?")+
-  ylab("Percentage")+ggtitle("National percentage of individuals who have had a 'Born Again' Experience")+
+  ylab("Percentage")+ggtitle("Individuals with 'Born Again' Experience")+
   geom_bar(aes(y=(..count..)/sum(..count..)), position="dodge")+
   theme(legend.position="none")+
   scale_y_continuous(labels=percent)+
