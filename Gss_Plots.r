@@ -144,7 +144,7 @@ Nreligid_region$RELIG<-factor(Nreligid_region$RELIG, levels=rev(levels(Nreligid_
 Nreligid_region %>% na.omit() %>% filter(YEAR==2014)  %>%
   ggplot(aes(x=REBORN, fill=RELIG))+
   xlab("Born Again Experience?")+
-  ylab("Percentage")+ggtitle("National percentage of individuals who have had a 'Born Again' Experience")+
+  ylab("Percentage")+ggtitle(" Nat'l % individuals with 'Born Again' Experience")+
   geom_bar(aes(y=(..count..)/sum(..count..)))+
   scale_fill_grey(start = 0.8, end= 0.2)+ theme_classic()+
   #theme(legend.position="none")+
